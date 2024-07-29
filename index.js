@@ -14,6 +14,6 @@ app.use(bodyParser.json());
 buildRoutes(app);
 
 const PORT = process.env.PORT || 8000
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`VOYAGER is running on port ${PORT}, happy sailing!`)
 })

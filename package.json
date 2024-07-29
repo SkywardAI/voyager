@@ -1,0 +1,20 @@
+{
+  "name": "voyager",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "OpenAI like APIs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}

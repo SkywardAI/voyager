@@ -14,6 +14,10 @@ function indexRoute() {
         res.sendFile(`${process.cwd()}/doc.html`);
     })
 
+    router.get('/healthy', (_, res)=>{
+        res.status(200).send('ok')
+    })
+
     return router;
 }
 

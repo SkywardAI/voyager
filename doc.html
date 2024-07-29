@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>VOYAGER APIs</title>
+        <style type="text/css">
+body {
+    margin: 0;
+    padding: 0;
+
+    --sidebar-width: 300px;
+    --main-width: calc(100% - var(--sidebar-width));
+}
+
+* {
+    box-sizing: border-box;
+    font-family: ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";
+}
+
+div {
+    display: block;
+}
+
+#sidebar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: var(--sidebar-width);
+    border-right: 1px solid gray;
+    overflow-y: auto;
+}
+
+#main {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: var(--main-width);
+    overflow-y: auto;
+    padding: 20px;
+}
+
+#sidebar > .route-block {
+    padding: 5px;
+    user-select: none;
+}
+
+#sidebar > .route-block > *:hover {
+    cursor: pointer;
+}
+
+#sidebar > .route-block > .title {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-bottom: 1px solid lightgray;
+}
+
+#sidebar > .route-block > .route {
+    padding-left: 5px;
+    margin: 5px 0px 5px 30px;
+    border-bottom: 1px solid lightgray;
+}
+
+#main > .route-block > .title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#main > .route-block > .route {
+    margin: 10px 20px;
+}
+        </style>
+        <script type="text/javascript">
+window.onload = (function() {
+"use strict";
+
+const APIs = [
+    {
+        name: 'Index',
+        route: '',
+        routes: [
+            {
+                route: '/',
+                description: 'This route showes this page.'
+            }
+        ]
+    }
+]
+
+const SIDEBAR = document.getElementById('sidebar');
+const MAIN = document.getElementById('main');
+
+// ===================================================================
+// 
+//                               FUNCTIONS
+// 
+// ===================================================================
+
+function createElement(tagName, textContent, options = {}) {
+    const elem = document.createElement(tagName);
+    elem.textContent = textContent;
+    
+    for(const key in options) {
+        elem[key] = options[key];
+    }
+
+    return elem;
+}
+
+function createPage() {
+    APIs.forEach(({name, route, routes})=>{
+
+        const sidebar_route_block = document.createElement('div');
+        sidebar_route_block.className = 'route-block'
+
+        const sidebar_route_name = createElement('div', name, {
+            className: 'title',
+            onclick: () => {
+                sidebar_route_block.classList.toggle('sidebar-opened');
+                MAIN.scrollTo({
+                    top: main_page_route_block.scrollTop,
+                    behavior: 'smooth'
+                })
+            }
+        })
+        sidebar_route_block.appendChild(sidebar_route_name);
+
+        const main_page_route_block = document.createElement('div');
+        main_page_route_block.className = 'route-block';
+        const main_page_route_title = createElement('div', name, { className: 'title' });
+        main_page_route_block.appendChild(main_page_route_title);
+
+        routes.forEach(({route, description})=>{
+            sidebar_route_block.appendChild(createElement('div', route, {
+                className: 'route',
+                onclick: () => {
+                    MAIN.scrollTo({
+                        top: route_on_main_page.scrollTop,
+                        behavior: 'smooth'
+                    })
+                }
+            }));
+
+            const route_on_main_page = document.createElement('div');
+            route_on_main_page.className = 'route'
+            route_on_main_page.appendChild(createElement('div', `Route: ${route}`, { className: 'title' }))
+            route_on_main_page.appendChild(createElement('div', description, { className: 'description' }))
+
+            main_page_route_block.appendChild(route_on_main_page);
+        })
+
+        SIDEBAR.appendChild(sidebar_route_block);
+        MAIN.appendChild(main_page_route_block);
+    })
+}
+
+// ===================================================================
+// 
+//                                  START
+// 
+// ===================================================================
+createPage();
+})
+        </script>
+    </head>
+    <body>
+        <div id="sidebar"></div>
+        <div id="main"></div>
+    </body>
+</html>

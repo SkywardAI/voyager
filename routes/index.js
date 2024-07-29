@@ -10,8 +10,8 @@ import decoderRoute from "./decoder.js";
 function indexRoute() {
     const router = Router();
 
-    router.get('/', (req, res)=>{
-        res.send('<h1>hello world</h1>')
+    router.get('/', (_, res)=>{
+        res.sendFile(`${process.cwd()}/doc.html`);
     })
 
     return router;

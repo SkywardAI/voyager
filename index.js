@@ -5,11 +5,16 @@ import { configDotenv } from 'dotenv';
 
 import buildRoutes from './routes/index.js'
 
+import swStats from 'swagger-stats';
+
 configDotenv()
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(swStats.getMiddleware({
+    name: "Voyager Swagger Monitor"
+}))
 
 buildRoutes(app);
 

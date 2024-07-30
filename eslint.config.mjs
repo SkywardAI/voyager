@@ -19,6 +19,7 @@ export default [
         } 
     },
     {
+        ignores: ["volumes/*"],
         rules: {
             'no-undef': 'off'
         }

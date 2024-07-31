@@ -12,7 +12,7 @@ services:
     expose:
       - 8080
     ports:
-      - 8080:8080
+      - ${INFERENCE_ENG_PORT}:8080
     command: ["-m", "models/${LANGUAGE_MODEL_NAME}","-c","8192"]
 
   embedding_eng:
@@ -28,7 +28,7 @@ services:
     expose:
       - 8080
     ports:
-      - 8082:8080
+      - ${EMBEDDING_ENG_PORT}:8080
     command: ["-m", "models/${EMBEDDING_MODEL_NAME}","--embeddings","--pooling","mean","-c","512"]
   
   voyager:

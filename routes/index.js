@@ -21,12 +21,20 @@ function indexRoute() {
     return router;
 }
 
+function generateAPIRouters() {
+    const api_router = Router();
+
+    api_router.use('/chat', inferenceRoute());
+    api_router.use('/token', tokenRoute());
+    api_router.use('/tracing', tracingRoute());
+    api_router.use('/embedding', embeddingRoute());
+    api_router.use('/encoder', encoderRoute());
+    api_router.use('/decoder', decoderRoute());
+
+    return api_router;
+}
+
 export default function buildRoutes(app) {
     app.use('/', indexRoute());
-    app.use('/inference', inferenceRoute());
-    app.use('/token', tokenRoute());
-    app.use('/tracing', tracingRoute());
-    app.use('/embedding', embeddingRoute());
-    app.use('/encoder', encoderRoute());
-    app.use('/decoder', decoderRoute());
+    app.use('/v1', generateAPIRouters());
 }

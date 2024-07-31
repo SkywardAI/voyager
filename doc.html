@@ -87,6 +87,26 @@ const APIs = [
                 description: 'This route showes this page.'
             }
         ]
+    },
+    {
+        name: 'Chat',
+        route: '/v1/chat',
+        routes: [
+            {
+                route: '/completions',
+                description: 'route for chat, follow OpenAI request & response format'
+            }
+        ]
+    },
+    {
+        name: 'Token',
+        route: '/v1/token',
+        routes: [
+            {
+                route: '/api-key',
+                description: 'get an API key for request chat'
+            }
+        ]
     }
 ]
 

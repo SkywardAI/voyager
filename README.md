@@ -41,4 +41,4 @@ npm run lint
 ```
 
 ## Monitor
-This project got monitor build with swagger-stats, when you got this project running, just go to `<Your Server>:<Your Port>/swagger-stats`
+This project got monitor build with swagger-stats, when you got this project running, just go to `<Your Server>:<Your Port>/stats`

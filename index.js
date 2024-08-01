@@ -28,7 +28,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(swStats.getMiddleware({
-    name: "Voyager Swagger Monitor"
+    name: "Voyager Swagger Monitor",
+    uriPath: '/stats'
 }))
 
 buildRoutes(app);

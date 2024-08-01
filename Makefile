@@ -5,6 +5,9 @@ APP_PORT:=8000
 # compose build related
 ENV_FILE:=.env
 
+ENG_ACCESS_PORT:=8080
+MODEL_SAVE_PATH:=volumes/models
+
 INFERENCE_ENG:=llamacpp
 INFERENCE_ENG_PORT:=8080
 INFERENCE_ENG_VERSION:=server--b1-2321a5e
@@ -32,6 +35,8 @@ run: build
 .PHONY: env
 env:
 	@echo "APP_PORT=$(APP_PORT)"> $(ENV_FILE)
+	@echo "ENG_ACCESS_PORT=$(ENG_ACCESS_PORT)">> $(ENV_FILE)
+	@echo "MODEL_SAVE_PATH=$(MODEL_SAVE_PATH)">> $(ENV_FILE)
 	@echo "INFERENCE_ENG=$(INFERENCE_ENG)">> $(ENV_FILE)
 	@echo "INFERENCE_ENG_PORT=$(INFERENCE_ENG_PORT)">> $(ENV_FILE)
 	@echo "INFERENCE_ENG_VERSION=$(INFERENCE_ENG_VERSION)">> $(ENV_FILE)
@@ -44,8 +49,13 @@ env:
 	@echo "EMBEDDING_MODEL_NAME=$(EMBEDDING_MODEL_NAME)">> $(ENV_FILE)
 	@echo "EMBEDDING_MODEL_URL=$(EMBEDDING_MODEL_URL)">> $(ENV_FILE)
 
+.PHONY: model-prepare
+model-prepare:
+	@mkdir -p $(MODEL_SAVE_PATH) && [ -f $(MODEL_SAVE_PATH)/$(LANGUAGE_MODEL_NAME) ] || wget -O $(MODEL_SAVE_PATH)/$(LANGUAGE_MODEL_NAME) $(LANGUAGE_MODEL_URL)
+	@mkdir -p $(MODEL_SAVE_PATH) && [ -f $(MODEL_SAVE_PATH)/$(EMBEDDING_MODEL_NAME) ] || wget -O $(MODEL_SAVE_PATH)/$(EMBEDDING_MODEL_NAME) $(EMBEDDING_MODEL_URL)
+
 .PHONY: compose-build
-compose-build: env
+compose-build: env model-prepare
 	@docker compose -f docker-compose.yaml build
 
 .PHONY: up

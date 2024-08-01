@@ -4,8 +4,8 @@ This project is OpenAI-like API set for SkywardAI project.
 ## BUILD & RUN
 
 ### Local Machine
+* Please make sure you installed `Node.js` on your local machine.  
 * This project developed on Node Version `v20.15.0`.  
-* Make sure you installed `Node.js`.  
   
 ```shell
 # Manage package by pnpm
@@ -22,7 +22,8 @@ npm run
 ```
 
 ### Container
-**Please make sure you have `docker` and `make` installed in your server** 
+* Please make sure you have `docker` and `make` installed in your server.  
+* Docker version for testing is `27.0.3, build 7d4bcd8`.  
 ```shell
 # to simply start with all needed containers started, please run
 make up
@@ -40,4 +41,4 @@ npm run lint
 ```
 
 ## Monitor
-This project got monitor build with swagger-stats, when you got this project running, just go to `<Your Server>:<Your Port>/swagger-stats`
+This project got monitor build with swagger-stats, when you got this project running, just go to `<Your Server>:<Your Port>/stats`

@@ -54,6 +54,7 @@ model-prepare:
 	@mkdir -p $(MODEL_SAVE_PATH) && [ -f $(MODEL_SAVE_PATH)/$(LANGUAGE_MODEL_NAME) ] || wget -O $(MODEL_SAVE_PATH)/$(LANGUAGE_MODEL_NAME) $(LANGUAGE_MODEL_URL)
 	@mkdir -p $(MODEL_SAVE_PATH) && [ -f $(MODEL_SAVE_PATH)/$(EMBEDDING_MODEL_NAME) ] || wget -O $(MODEL_SAVE_PATH)/$(EMBEDDING_MODEL_NAME) $(EMBEDDING_MODEL_URL)
 
+#  normal build & up
 .PHONY: compose-build
 compose-build: env model-prepare
 	@docker compose -f docker-compose.yaml build
@@ -61,3 +62,17 @@ compose-build: env model-prepare
 .PHONY: up
 up: compose-build
 	@docker compose -f docker-compose.yaml up -d
+
+#  dev build & up
+.PHONY: compose-build-dev
+compose-build-dev: env model-prepare
+	@docker compose -f docker-compose-dev.yaml build
+
+.PHONY: dev
+dev: env model-prepare
+	@docker compose -f docker-compose-dev.yaml up -d
+
+# stop
+.PHONY: stop
+stop:
+	docker compose stop

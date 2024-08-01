@@ -3,7 +3,7 @@
 .github
 .vscode
 .gitignore
-Dockerfile
+*Dockerfile
 README.md
 node_modules
 package-lock.json
@@ -11,4 +11,5 @@ pnpm-lock.yaml
 eslint.config.mjs
 LICENSE
 volumes
-docker-compose.yaml
+docker-compose*
+Makefile

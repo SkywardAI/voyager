@@ -35,8 +35,10 @@ services:
     container_name: voyager
     restart: always
     build:
-      dockerfile: Dockerfile
+      dockerfile: devDockerfile
       context: .
+    volumes:
+      - .:/app
     expose:
       - ${APP_PORT}
     ports:

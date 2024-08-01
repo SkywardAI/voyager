@@ -32,7 +32,12 @@ make build
 # if you want to start only this project in docker, please run
 make start
 # PLEASE NOTE: make start will automatically run make build first
+
+# to run a container bind to your local machine volume, run
+make dev
+# this will do the same thing as `make up` but allows you to make changes and sync with container
 ```
+**NOTE:** `make dev` Requires Node.js environment installed, or at least have `node_modules` specified in `package.json` installed on your server. Please see [Local Machine](#local-machine) section.
 
 ## Lint
 To start lint your code, simply run
@@ -41,4 +46,5 @@ npm run lint
 ```
 
 ## Monitor
-This project got monitor build with swagger-stats, when you got this project running, just go to `<Your Server>:<Your Port>/stats`
+This project got monitor build with swagger-stats, when you got this project running, just go to `<Your Server>:<Your Port>/stats`.  
+For example, [http://localhost:8000/stats](http://localhost:8000/stats)

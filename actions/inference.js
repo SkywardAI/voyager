@@ -44,6 +44,8 @@ function generateResponseContent(id, object, model, system_fingerprint, stream, 
     return resp;
 }
 
+const default_stop_keywords = ['### user:']
+
 export async function chatCompletion(req, res) {
     const api_key = (req.headers.authorization || '').split('Bearer ').pop();
     if(!api_key) {
@@ -51,9 +53,15 @@ export async function chatCompletion(req, res) {
         return;
     }
 
-    const system_fingerprint = generateFingerprint();
-    let {messages, ...request_body} = req.body;
+    let {messages, max_tokens, ...request_body} = req.body;
+
+    // format requests to llamacpp format input
     request_body.prompt = formatOpenAIContext(messages);
+    if(max_tokens) request_body.n_predict = max_tokens;
+    if(!request_body.stop) request_body.stop = [...default_stop_keywords];
+
+    // extra
+    const system_fingerprint = generateFingerprint();
     const model = request_body.model || process.env.LANGUAGE_MODEL_NAME
 
     if(request_body.stream) {

@@ -76,3 +76,10 @@ dev: env model-prepare
 .PHONY: stop
 stop:
 	docker compose stop
+
+#########################################################################################
+# testing
+
+.PHONY: pytest
+pytest:
+	@python3 -m pytest -v

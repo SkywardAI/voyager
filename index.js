@@ -30,14 +30,14 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-buildRoutes(app);
-
-// swagger setup
 app.use(swStats.getMiddleware({
     name: "Voyager Swagger Monitor",
     uriPath: '/stats',
     swaggerSpec
 }))
+
+buildRoutes(app);
+
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customSiteTitle: "Voyager APIs"
 }))

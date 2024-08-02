@@ -5,6 +5,7 @@ import babelImportAttributesPlugin from '@babel/plugin-syntax-import-attributes'
 
 
 export default [
+    {ignores: ["volumes/*", ".github/*", ".vscode/*", "example/*"]},
     {languageOptions: { globals: globals.browser }},
     pluginJs.configs.recommended,
     { 
@@ -23,7 +24,6 @@ export default [
         }
     },
     {
-        ignores: ["volumes/*"],
         rules: {
             'no-undef': 'off'
         }

@@ -21,18 +21,26 @@ import { configDotenv } from 'dotenv';
 import buildRoutes from './routes/index.js'
 
 import swStats from 'swagger-stats';
+import * as swaggerUi from 'swagger-ui-express'
+import swaggerSpec from "./swagger.json" with { type: "json" };
 
 configDotenv()
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-app.use(swStats.getMiddleware({
-    name: "Voyager Swagger Monitor",
-    uriPath: '/stats'
-}))
 
 buildRoutes(app);
+
+// swagger setup
+app.use(swStats.getMiddleware({
+    name: "Voyager Swagger Monitor",
+    uriPath: '/stats',
+    swaggerSpec
+}))
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: "Voyager APIs"
+}))
 
 const PORT = process.env.PORT || 8000
 app.listen(PORT, '0.0.0.0', () => {

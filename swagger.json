@@ -1,0 +1,367 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Voyager APIs",
+    "contact": {
+      "email": "cbh778899@outlook.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Index",
+      "description": "Index of Voyager project"
+    },
+    {
+      "name": "Chat",
+      "description": "v1 Chat APIs"
+    },
+    {
+      "name": "Token",
+      "description": "v1 Token APIs"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Index"
+        ],
+        "description": "Route to get this page"
+      }
+    },
+    "/healthy": {
+      "get": {
+        "tags": [
+          "Index"
+        ],
+        "summary": "Route for healthy check",
+        "description": "If got response, means the server is running normally",
+        "responses": {
+          "200": {
+            "description": "Server works normally",
+            "content": {
+              "text/plain; charset=utf-8": {
+                "examples": {
+                  "ok": {"value": "ok"}
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The server is not running normally, please check your server."
+          }
+        }
+      }
+    },
+    "/stats": {
+      "get": {
+        "tags": ["Index"],
+        "description": "Graphical server stats, Click [here](/stats) to get the page.",
+        "responses": {
+          "200": {
+            "description": "Returns The page of checking stats",
+            "content":{
+              "text/html": {}
+            }
+          }
+        }
+      }
+    },
+    "/v1/chat/completions": {
+      "post": {
+        "tags": [
+          "Chat"
+        ],
+        "summary": "AI chat completion",
+        "description": "Start a conversation with given messages as context",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "description": "Request body of AI chat completion",
+              "schema": {
+                "$ref": "#/components/schemas/CompletionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OpenAI like response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {"$ref": "#/components/schemas/CompletionResponseStream"},
+                    {"$ref": "#/components/schemas/CompletionResponseEntire"}
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {"api_key": []}
+        ]
+      }
+    },
+    "/v1/token/api-key": {
+      "get": {
+        "tags": [ "Token" ],
+        "summary": "Get api key",
+        "description": "The route to get api key, please keep it yourself.",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "api-key": {
+                      "type": "string",
+                      "examples": [
+                        "voy-5uh12i196p8rqqgo3pbdmoaj1teit9clgk9ujkk0n91o"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CompletionRequest": {
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties":{
+                "role": {
+                  "type": "string",
+                  "examples": [
+                    "system", "user", "assistant"
+                  ]
+                },
+                "content": {
+                  "type": "string",
+                  "examples": [
+                    "You are a helpful assistant who helps users solve their questions.",
+                    "Hi, what can you do?"
+                  ]
+                }
+              }
+            }
+          },
+          "max_tokens": {
+            "type": "integer",
+            "examples": [ 32, 512 ]
+          },
+          "end": {
+            "type": "array",
+            "description": "When AI outputs the end pattern, end response.",
+            "items": {
+              "type": "string",
+              "examples": ["### user:"]
+            }
+          },
+          "stream": {
+            "type": "boolean",
+            "description": "If set to `true`, AI will response streamed."
+          }
+        }
+      },
+      "CompletionResponseEntire": {
+        "description": "Response of completion, where `stream=false`",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id passed through `Authorization` header",
+            "examples": [
+              "voy-5uh12i196p8rqqgo3pbdmoaj1teit9clgk9ujkk0n91o"
+            ]
+          },
+          "object": {
+            "type": "string",
+            "examples": [
+              "chat.completion"
+            ]
+          },
+          "created": {
+            "type": "integer",
+            "examples": [
+              1722576434241
+            ]
+          },
+          "model": {
+            "type": "string",
+            "examples": [
+              "Phi3-mini-4k-instruct-Q4.gguf"
+            ]
+          },
+          "system_fingerprint": {
+            "type": "fp_2flh9v7kboo"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "role": {
+                        "type": "string",
+                        "examples": [
+                          "assistant"
+                        ]
+                      },
+                      "message": {
+                        "content": "string",
+                        "examples": [
+                          "Hi, I'm here to help!"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "logprobs": {
+                  "type": "number",
+                  "nullable": true,
+                  "examples": [null]
+                },
+                "finish_reason": {
+                  "type": "string",
+                  "examples": [
+                    "stop"
+                  ]
+                }
+              }
+            }
+          },
+          "usage": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "prompt_tokens": {
+                  "type": "integer",
+                  "examples":[0]
+                },
+                "completion_tokens": {
+                  "type": "integer",
+                  "examples":[0]
+                },
+                "total_tokens": {
+                  "type": "integer",
+                  "examples":[0]
+                }
+              }
+            }
+          }
+        }
+      },
+      "CompletionResponseStream": {
+        "description": "Response of completion, where `stream=true`",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id passed through `Authorization` header",
+            "examples": [
+              "voy-5uh12i196p8rqqgo3pbdmoaj1teit9clgk9ujkk0n91o"
+            ]
+          },
+          "object": {
+            "type": "string",
+            "examples": [
+              "chat.completion"
+            ]
+          },
+          "created": {
+            "type": "integer",
+            "examples": [
+              1722576434241
+            ]
+          },
+          "model": {
+            "type": "string",
+            "examples": [
+              "Phi3-mini-4k-instruct-Q4.gguf"
+            ]
+          },
+          "system_fingerprint": {
+            "type": "fp_2flh9v7kboo"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer"
+                },
+                "delta": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "role": {
+                        "type": "string",
+                        "examples": [
+                          "assistant"
+                        ]
+                      },
+                      "message": {
+                        "content": "string",
+                        "examples": [
+                          "Hi, "
+                        ]
+                      }
+                    }
+                  }
+                },
+                "logprobs": {
+                  "type": "number",
+                  "nullable": true,
+                  "examples": [null]
+                },
+                "finish_reason": {
+                  "type": "string",
+                  "examples": [
+                    null, "stop"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Please input your api key here. You can get it from GET /v1/token/api-key"
+      }
+    }
+  }
+}

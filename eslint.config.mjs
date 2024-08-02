@@ -1,6 +1,7 @@
 import globals from "globals/index.js";
 import pluginJs from "@eslint/js";
 import * as babelParser from "@babel/eslint-parser"
+import babelImportAttributesPlugin from '@babel/plugin-syntax-import-attributes'
 
 
 export default [
@@ -14,9 +15,12 @@ export default [
                 babelOptions: {
                     babelrc: false,
                     configFile: false,
+                    plugins: [
+                        babelImportAttributesPlugin
+                    ]
                 }
             }
-        } 
+        }
     },
     {
         ignores: ["volumes/*"],

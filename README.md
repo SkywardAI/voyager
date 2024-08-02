@@ -3,6 +3,13 @@ This project is OpenAI-like API set for SkywardAI project.
 
 ## BUILD & RUN
 
+### Setting Up Video
+
+
+https://github.com/user-attachments/assets/2b8f1ea7-0aca-44ea-b218-eff8e1769729
+
+
+
 ### Local Machine
 * Please make sure you installed `Node.js` on your local machine.  
 * This project developed on Node Version `v20.15.0`.  

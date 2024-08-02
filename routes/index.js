@@ -25,10 +25,6 @@ import decoderRoute from "./decoder.js";
 function indexRoute() {
     const router = Router();
 
-    router.get('/', (_, res)=>{
-        res.sendFile(`${process.cwd()}/doc.html`);
-    })
-
     router.get('/healthy', (_, res)=>{
         res.status(200).send('ok')
     })

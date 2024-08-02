@@ -69,7 +69,7 @@ compose-build-dev: env model-prepare
 	@docker compose -f docker-compose-dev.yaml build
 
 .PHONY: dev
-dev: env model-prepare
+dev: compose-build-dev
 	@docker compose -f docker-compose-dev.yaml up -d
 
 # stop

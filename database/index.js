@@ -37,6 +37,6 @@ export async function searchByEmbedding(vector) {
 export async function searchByMessage(msg) {
     const { embedding } = await post('embedding', {body: {
         content: msg
-    }}, { eng: "rag" });
+    }}, { eng: "embedding" });
     return await searchByEmbedding(embedding);
 }

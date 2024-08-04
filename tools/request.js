@@ -15,7 +15,7 @@
 
 const BASE_URL = {
     "chat": `http://${process.env.INFERENCE_ENG || 'llamacpp'}:${process.env.ENG_ACCESS_PORT || 8080}`,
-    "rag": `http://${process.env.EMBEDDING_ENG || 'embedding_eng'}:${process.env.ENG_ACCESS_PORT || 8080}`
+    "embedding": `http://${process.env.EMBEDDING_ENG || 'embedding_eng'}:${process.env.ENG_ACCESS_PORT || 8080}`
 }
 
 const default_options = {
@@ -26,7 +26,7 @@ const default_options = {
 
 /**
  * @typedef RequestOptions
- * @property {"rag"|"chat"} eng select between rag engine or chat engine, default value is `chat`
+ * @property {"embedding"|"chat"} eng select between embedding engine or chat engine, default value is `chat`
  * @property {Boolean} getJSON  
  *  * If set to `true`, this function will return the result of `await(await fetch(...)).json();`
  *  and include an attribute `http_error: true` if there's any http error occurs during fetch().  

@@ -2,7 +2,7 @@ import * as lancedb from "@lancedb/lancedb";
 import { get, post } from "../tools/request.js"
 import { Schema, Field, FixedSizeList, Int16, Float16, Utf8 } from "apache-arrow";
 
-const uri = "/database/lancedb/";
+const uri = "/tmp/lancedb/";
 const db = await lancedb.connect(uri);
 
 const table = await db.createEmptyTable("rag_data", new Schema([

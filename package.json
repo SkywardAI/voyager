@@ -5,8 +5,8 @@
   "description": "OpenAI like APIs",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js --disable-warning=ExperimentalWarning",
-    "dev": "nodemon index.js --disable-warning=ExperimentalWarning",
+    "start": "node --disable-warning=ExperimentalWarning index.js",
+    "dev": "nodemon --disable-warning=ExperimentalWarning index.js",
     "lint": "npx eslint .",
     "build": "npm install && node index.js"
   },
@@ -17,6 +17,8 @@
     "@babel/eslint-parser": "^7.25.1",
     "@babel/plugin-syntax-import-attributes": "^7.24.7",
     "@eslint/js": "^9.8.0",
+    "@lancedb/lancedb": "^0.8.0",
+    "apache-arrow": "^17.0.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

@@ -1,6 +1,11 @@
 
 # Demo for how to use openai API client to invoke voyager API
 
+### Example Video
+
+https://github.com/user-attachments/assets/75d5d380-20df-4d88-b94a-19bc4fabc224
+
+
 ## Prerequisites
 
 - Python 3.10^

@@ -1,6 +1,10 @@
 # VOYAGER
 This project is OpenAI-like API set for SkywardAI project.
 
+[![Linter and Builder 🚀](https://github.com/SkywardAI/voyager/actions/workflows/linter-builder-checker.yml/badge.svg)](https://github.com/SkywardAI/voyager/actions/workflows/linter-builder-checker.yml)
+[![Release Drafter 🚀](https://github.com/SkywardAI/voyager/actions/workflows/release-drafter.yml/badge.svg)](https://github.com/SkywardAI/voyager/actions/workflows/release-drafter.yml) 
+[![Release Image 🚀](https://github.com/SkywardAI/voyager/actions/workflows/release-image.yml/badge.svg)](https://github.com/SkywardAI/voyager/actions/workflows/release-image.yml)
+
 ## BUILD & RUN
 
 ### Setting Up Video

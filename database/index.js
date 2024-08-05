@@ -1,3 +1,18 @@
+// coding=utf-8
+
+// Copyright [2024] [SkywardAI]
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//        http://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import { connect } from "@lancedb/lancedb";
 import { 
     Schema, Field, FixedSizeList, 
@@ -5,7 +20,7 @@ import {
     // eslint-disable-next-line
     Table 
 } from "apache-arrow";
-import { DATASET_TABLE, SYSTEM_TABLE } from "./types";
+import { DATASET_TABLE, SYSTEM_TABLE } from "./types.js";
 
 const uri = "/tmp/lancedb/";
 const db = await connect(uri);
@@ -25,8 +40,6 @@ export async function initDB(force = false) {
         new Field("answer", new Utf8())
     ]), open_options)
 }
-
-initDB();
 
 /**
  * Open a table with table name

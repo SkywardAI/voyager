@@ -16,6 +16,7 @@
 import { formatOpenAIContext } from "../tools/formatContext.js";
 import { generateFingerprint } from "../tools/generator.js";
 import { post } from "../tools/request.js";
+import { loadDataset, searchByMessage } from "../database/rag-inference.js";
 
 function generateResponseContent(id, object, model, system_fingerprint, stream, content, stopped) {
     const resp = {
@@ -53,11 +54,42 @@ export async function chatCompletion(req, res) {
         return;
     }
 
-    let {messages, max_tokens, ...request_body} = req.body;
+    let {
+        messages, max_tokens, 
+        system_passed_extra_properties, 
+        ...request_body
+    } = req.body;
+    // apply default values or send error messages
+    if(!messages || !messages.length) {
+        res.status(400).send("Messages not given!");
+        return;
+    }
+    if(!max_tokens) max_tokens = 128;
+
+    let genResp = generateResponseContent;
+    if(system_passed_extra_properties) {
+        const { inference_type, extra_fields } = system_passed_extra_properties;
+        if(inference_type === "rag") {
+            const { has_background, question, answer, _distance:distance } = extra_fields;
+            if(has_background) {
+                messages.splice(-1, 0, {
+                    role: 'system', 
+                    content: `Your next answer should based on this background: the question is "${question}" and the answer is "${answer}".`
+                })
+            }
+            genResp = (...args) => {
+                const content = generateResponseContent(...args)
+                if(args[6] && has_background) {
+                    return { content, rag_context: {question, answer, distance} }
+                } else return content;
+            }
+        }
+    }
+
 
     // format requests to llamacpp format input
     request_body.prompt = formatOpenAIContext(messages);
-    if(max_tokens) request_body.n_predict = max_tokens;
+    request_body.n_predict = max_tokens;
     if(!request_body.stop) request_body.stop = [...default_stop_keywords];
 
     // extra
@@ -78,16 +110,39 @@ export async function chatCompletion(req, res) {
             const data = value.split("data: ").pop()
             const json_data = JSON.parse(data)
             const { content, stop } = json_data;
-            res.write(JSON.stringify(generateResponseContent(api_key, 'chat.completion.chunk', model, system_fingerprint, true, content, stop))+'\n\n');
+            res.write(JSON.stringify(genResp(api_key, 'chat.completion.chunk', model, system_fingerprint, true, content, stop))+'\n\n');
         }
         res.end();
     } else {
         const eng_resp = await post('completion', { body: request_body });
         const { model, content } = eng_resp;
-        const response_json = generateResponseContent(
+        const response_json = genResp(
             api_key, 'chat.completion', model, system_fingerprint,
             false, content, true
         )
         res.send(response_json);
     }
+}
+
+export async function ragChatCompletion(req, res) {
+    const { dataset_name, dataset_url } = req.body;
+    if(!dataset_name || !dataset_url) {
+        res.status(400).send("Dataset information not specified.");
+    }
+
+    await loadDataset(dataset_name, dataset_url);
+    if(!req.body.messages || !req.body.messages.length) {
+        res.status(400).send("Messages not given!");
+        return;
+    }
+    const latest_message = req.body.messages.slice(-1)[0].content;
+    const rag_result = await searchByMessage(dataset_name, latest_message);
+    req.body.system_passed_extra_properties = {
+        inference_type: "rag",
+        extra_fields: {
+            has_background: !!rag_result,
+            ...(rag_result || {})
+        }
+    }
+    chatCompletion(req, res);
 }

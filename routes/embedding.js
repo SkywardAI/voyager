@@ -14,8 +14,12 @@
 // limitations under the License.
 
 import { Router } from "express";
+import { embeddings } from "../actions/embedding.js";
 
 export default function embeddingRoute() {
     const router = Router();
+
+    router.post("/", embeddings);
+
     return router;
 }

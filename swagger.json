@@ -26,6 +26,10 @@
       "description": "v1 Chat APIs"
     },
     {
+      "name": "Embedding",
+      "description": "v1 Token APIs"
+    },
+    {
       "name": "Token",
       "description": "v1 Token APIs"
     }
@@ -36,6 +40,7 @@
         "tags": [
           "Index"
         ],
+        "summary" : "Route of this page",
         "description": "Route to get this page"
       }
     },
@@ -66,6 +71,7 @@
     "/stats": {
       "get": {
         "tags": ["Index"],
+        "summary" : "Route to check stats",
         "description": "Graphical server stats, Click [here](/stats) to get the page.",
         "responses": {
           "200": {
@@ -91,6 +97,12 @@
               "description": "Request body of AI chat completion",
               "schema": {
                 "$ref": "#/components/schemas/CompletionRequest"
+              },
+              "example": {
+                "messages": [
+                  { "role": "system", "content": "You are a helpful assistant who helps users solve their questions." },
+                  { "role": "user", "content": "Hello, tell me more about you!" }
+                ]
               }
             }
           }
@@ -108,6 +120,198 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Some errors occured"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {"api_key": []}
+        ]
+      }
+    },
+    "/v1/chat/rag-completions": {
+      "post": {
+        "tags": ["Chat"],
+        "summary": "AI chat completion with RAG dataset.",
+        "description": "Start a conversation with given messages and QAs from dataset as context",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompletionRequest"
+              },
+              "example": {
+                "messages": [
+                  { "role": "system", "content": "You are a helpful assistant who helps users solve their questions." },
+                  { "role": "user", "content": "tell me something interest about massachusetts" }
+                ],
+                "dataset_name": "aisuko/squad01",
+                "dataset_url": "https://datasets-server.huggingface.co/rows?dataset=aisuko%2Fsquad01&config=default&split=validation&offset=0&length=100"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "content": {
+                      "$ref": "#/components/schemas/CompletionResponseEntire"
+                    },
+                    "rag_context": {
+                      "type": "object",
+                      "properties": {
+                        "question": {
+                          "type": "string",
+                          "examples": ["In what year did Massachusetts first require children to be educated in schools?"]
+                        },
+                        "answer": {
+                          "type": "string",
+                          "examples": ["1852"]
+                        },
+                        "distance": {
+                          "type": "number",
+                          "examples": [0.27701786160469055]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some errors occured"
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {"api_key": []}
+        ]
+      }
+    },
+    "/v1/embeddings": {
+      "post": {
+        "tags": ["Embedding"],
+        "summary": "Get embedding of input",
+        "description": "Get the embedding value of given input, in OpenAI format",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "input": {
+                    "type": "string",
+                    "examples": ["Hello, world!"]
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "You can pass model, but this won't work at current stage",
+                    "examples": ["all-MiniLM-L6-v2"]
+                  },
+                  "encoding_format": {
+                    "type": "string",
+                    "description": "You can pass encoding_format, but this won't work as we currently only support float.",
+                    "examples": ["float"]
+                  }
+                },
+                "required": [
+                  "input"
+                ],
+                "example": {
+                  "input": "Hello, world!",
+                  "model": "all-MiniLM-L6-v2"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Everything works normal, get embedding result in OpenAI format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "examples": ["list"]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "object": {
+                            "type": "string",
+                            "examples": ["embedding"]
+                          },
+                          "embedding": {
+                            "type": "array",
+                            "items": {
+                              "type": "number",
+                              "examples": [-0.02184351161122322, 0.049017686396837234, 0.06728602200746536]
+                            },
+                            "description": "The length should be exactly 384 items",
+                            "example": [
+                              -0.02184351161122322,
+                              0.049017686396837234,
+                              0.06728602200746536,
+                              0.06581537425518036,
+                              -0.05950690433382988,
+                              -0.08613293617963791,
+                              "*** totally 384 floats ***"
+                            ]
+                          },
+                          "index": {
+                            "type": "integer",
+                            "examples": [0]
+                          }
+                        }
+                      }
+                    },
+                    "model": {
+                      "type": "string",
+                      "examples": ["all-MiniLM-L6-v2"]
+                    },
+                    "usage": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "prompt_tokens": {
+                            "type": "integer",
+                            "examples": [0]
+                          },
+                          "total_tokens": {
+                            "type": "integer",
+                            "examples": [0]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Some errors occured"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         },
         "security": [
@@ -168,7 +372,7 @@
           },
           "max_tokens": {
             "type": "integer",
-            "examples": [ 32, 512 ]
+            "examples": [ 32, 128, 512 ]
           },
           "end": {
             "type": "array",
@@ -182,7 +386,68 @@
             "type": "boolean",
             "description": "If set to `true`, AI will response streamed."
           }
-        }
+        },
+        "required": [
+          "messages"
+        ]
+      },
+      "RAGCompletionRequest": {
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties":{
+                "role": {
+                  "type": "string",
+                  "examples": [
+                    "system", "user", "assistant"
+                  ]
+                },
+                "content": {
+                  "type": "string",
+                  "examples": [
+                    "You are a helpful assistant who helps users solve their questions.",
+                    "Hi, what can you do?"
+                  ]
+                }
+              }
+            }
+          },
+          "max_tokens": {
+            "type": "integer",
+            "examples": [ 32, 128, 512 ]
+          },
+          "end": {
+            "type": "array",
+            "description": "When AI outputs the end pattern, end response.",
+            "items": {
+              "type": "string",
+              "examples": ["### user:"]
+            }
+          },
+          "stream": {
+            "type": "boolean",
+            "description": "If set to `true`, AI will response streamed."
+          },
+          "dataset_name": {
+            "type": "string",
+            "examples": [
+              "aisuko/squad01"
+            ]
+          },
+          "dataset_url": {
+            "type": "string",
+            "examples": [
+              "https://datasets-server.huggingface.co/rows?dataset=aisuko%2Fsquad01&config=default&split=validation&offset=0&length=100"
+            ]
+          }
+        },
+        "required": [
+          "messages",
+          "dataset_name",
+          "dataset_url"
+        ]
       },
       "CompletionResponseEntire": {
         "description": "Response of completion, where `stream=false`",

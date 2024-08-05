@@ -18,6 +18,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { configDotenv } from 'dotenv';
 
+import { initDB } from './database/index.js';
 import buildRoutes from './routes/index.js'
 
 import swStats from 'swagger-stats';
@@ -25,6 +26,7 @@ import * as swaggerUi from 'swagger-ui-express'
 import swaggerSpec from "./swagger.json" with { type: "json" };
 
 configDotenv()
+await initDB()
 
 const app = express();
 app.use(cors());

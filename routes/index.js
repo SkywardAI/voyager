@@ -21,6 +21,7 @@ import tracingRoute from "./tracing.js";
 import embeddingRoute from "./embedding.js";
 import encoderRoute from "./encoder.js";
 import decoderRoute from "./decoder.js";
+import versionRoute from "./version.js";
 
 function indexRoute() {
     const router = Router();
@@ -38,9 +39,10 @@ function generateAPIRouters() {
     api_router.use('/chat', inferenceRoute());
     api_router.use('/token', tokenRoute());
     api_router.use('/tracing', tracingRoute());
-    api_router.use('/embeddings', embeddingRoute());
+    api_router.use('/embedding', embeddingRoute());
     api_router.use('/encoder', encoderRoute());
     api_router.use('/decoder', decoderRoute());
+    api_router.use('/version', versionRoute());
 
     return api_router;
 }

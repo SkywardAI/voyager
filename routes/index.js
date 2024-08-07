@@ -39,7 +39,7 @@ function generateAPIRouters() {
     api_router.use('/chat', inferenceRoute());
     api_router.use('/token', tokenRoute());
     api_router.use('/tracing', tracingRoute());
-    api_router.use('/embedding', embeddingRoute());
+    api_router.use('/embeddings', embeddingRoute());
     api_router.use('/encoder', encoderRoute());
     api_router.use('/decoder', decoderRoute());
     api_router.use('/version', versionRoute());

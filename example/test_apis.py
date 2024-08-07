@@ -89,3 +89,9 @@ class TestAllAPIs(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         # api key should not be empty
         self.assertTrue(len(res.json().get("api_key"))>0)
+
+    def test_version_api(self):
+        res = requests.get(url=self.base_url+"/v1/version")
+        self.assertEqual(res.status_code, 200)
+        data = res.json().get("inference_engine_version")
+        self.assertEqual('server--b1-2321a5e', data)

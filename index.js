@@ -16,6 +16,7 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import { createServer } from "https"
 import { configDotenv } from 'dotenv';
 
 import { initDB } from './database/index.js';
@@ -24,27 +25,50 @@ import buildRoutes from './routes/index.js'
 import swStats from 'swagger-stats';
 import * as swaggerUi from 'swagger-ui-express'
 import swaggerSpec from "./swagger.json" with { type: "json" };
+import { decodeEnabledAPIs, isRouteEnabled } from './tools/enabledApiDecoder.js';
 
 configDotenv()
+configDotenv({path: ".env.production", override:true})
+decodeEnabledAPIs();
+
 await initDB()
 
 const app = express();
-app.use(cors());
+app.use(cors({origin: process.env.ALLOW_ORIGIN || '*'}));
 app.use(bodyParser.json());
 
-app.use(swStats.getMiddleware({
-    name: "Voyager Swagger Monitor",
-    uriPath: '/stats',
-    swaggerSpec
-}))
+if(isRouteEnabled("index", "stats")) {
+    app.use(swStats.getMiddleware({
+        name: "Voyager Swagger Monitor",
+        uriPath: '/stats',
+        swaggerSpec
+    }))
+}
 
 buildRoutes(app);
 
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customSiteTitle: "Voyager APIs"
-}))
+if(isRouteEnabled("index", "docs")) {
+    app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+        customSiteTitle: "Voyager APIs"
+    }))
+}
 
 const PORT = process.env.PORT || 8000
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`VOYAGER is running on port ${PORT}, happy sailing!`)
-})
+if(
+    +process.env.ENABLE_HTTPS &&
+    process.env.HTTPS_KEY_PATH !== "*" &&
+    process.env.HTTPS_CERT_PATH !== '*'
+) {
+    const ssl_options = {
+        key: process.env.HTTPS_KEY_PATH,
+        cert: process.env.HTTPS_CERT_PATH
+    }
+    if(process.env.HTTPS_CA_PATH) ssl_options.ca = process.env.HTTPS_CA_PATH;
+    createServer(ssl_options, app).listen(PORT, '0.0.0.0', () => {
+        console.log(`VOYAGER is running on port ${PORT}, happy sailing!`)
+    })
+} else {
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`VOYAGER is running on port ${PORT}, happy sailing!`)
+    })
+}

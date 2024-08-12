@@ -15,12 +15,13 @@
 
 import { Router } from "express";
 import { chatCompletion, ragChatCompletion } from "../actions/inference.js";
+import { isRouteEnabled } from "../tools/enabledApiDecoder.js";
 
 export default function inferenceRoute() {
     const router = Router();
 
-    router.post('/completions', chatCompletion);
-    router.post('/rag-completions', ragChatCompletion);
+    isRouteEnabled("inference", "completions") && router.post('/completions', chatCompletion);
+    isRouteEnabled("inference", "rag") && router.post('/rag-completions', ragChatCompletion);
 
     return router;
 }

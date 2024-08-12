@@ -27,7 +27,7 @@ function queryApiKeyTbl(key) {
     return keyQuery
 }
 
-export async function test(key){
+export async function addKeytoTable(key){
     const keyQuery = await queryApiKeyTbl(key);
     if ( keyQuery.length == 0){
         await tbl.add([{api_key: key, usage: MAX_USAGE}]);

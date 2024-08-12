@@ -34,9 +34,10 @@ const allow_paths = {
     }
 }
 
-const allow_indexs = {
+const allow_indexes = {
     index: false,
     inference: false,
+    token: false,
     embedding: false,
     version: false
 }
@@ -49,8 +50,8 @@ export function decodeEnabledAPIs() {
                 allow_paths[route][sub_route] = true;
             }
         }
-        for(const route in allow_indexs) {
-            allow_indexs[route] = true;
+        for(const route in allow_indexes) {
+            allow_indexes[route] = true;
         }
         return;
     }
@@ -61,8 +62,8 @@ export function decodeEnabledAPIs() {
             allow_paths[path_name][api_name] = !!+paths[path_index][api_index];
         })
     })
-    for(const route in allow_indexs) {
-        allow_indexs[route] = !!Object.values(allow_paths[route]).filter(e=>e).length
+    for(const route in allow_indexes) {
+        allow_indexes[route] = !!Object.values(allow_paths[route]).filter(e=>e).length
     }
 }
 
@@ -74,7 +75,7 @@ export function decodeEnabledAPIs() {
  */
 export function isRouteEnabled(index_path_name, api_name = null) {
     if(!api_name) {
-        return allow_indexs[index_path_name];
+        return allow_indexes[index_path_name];
     } else {
         return allow_paths[index_path_name][api_name];
     }

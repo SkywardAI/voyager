@@ -32,6 +32,10 @@
     {
       "name": "Token",
       "description": "v1 Token APIs"
+    },
+    {
+      "name": "Version",
+      "description": "v1 Version APIs"
     }
   ],
   "paths": {
@@ -335,6 +339,30 @@
                       "examples": [
                         "voy-5uh12i196p8rqqgo3pbdmoaj1teit9clgk9ujkk0n91o"
                       ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/version": {
+      "get": {
+        "summary": "Get engine versions",
+        "description": "Get version of various engines used by this project",
+        "tags": ["Version"],
+        "responses": {
+          "200": {
+            "description": "Get a json of versions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "inference_engine_version": {
+                      "type": "string",
+                      "examples": ["server--b1-2321a5e"]
                     }
                   }
                 }

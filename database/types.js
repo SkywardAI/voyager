@@ -15,3 +15,4 @@
 
 export const SYSTEM_TABLE = 'system';
 export const DATASET_TABLE = 'dataset';
+export const API_KEY_TABLE = 'api_tokens'

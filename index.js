@@ -63,7 +63,9 @@ if(
         key: process.env.HTTPS_KEY_PATH,
         cert: process.env.HTTPS_CERT_PATH
     }
-    if(process.env.HTTPS_CA_PATH) ssl_options.ca = process.env.HTTPS_CA_PATH;
+    if(process.env.HTTPS_CA_PATH && process.env.HTTPS_CA_PATH !== '*') {
+        ssl_options.ca = process.env.HTTPS_CA_PATH;
+    }
     createServer(ssl_options, app).listen(PORT, '0.0.0.0', () => {
         console.log(`VOYAGER is running on port ${PORT}, happy sailing!`)
     })

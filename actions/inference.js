@@ -76,11 +76,6 @@ function generateResponseContent(
  */
 async function doInference(req_body, callback, isStream) {
     if(isStream) {
-        res.setHeader("Content-Type", "text/event-stream");
-        res.setHeader("Cache-Control", "no-cache");
-        res.setHeader("X-Accel-Buffering", "no");
-        res.setHeader("Connection", "Keep-Alive");
-        
         const eng_resp = await post('completion', { body: req_body }, { getJSON: false });
         const reader = eng_resp.body.pipeThrough(new TextDecoderStream()).getReader();
         while(true) {
@@ -94,7 +89,6 @@ async function doInference(req_body, callback, isStream) {
         if(eng_resp.http_error) return;
         callback(eng_resp);
     }
-    res.end();
 }
 
 function validateAPIKey(api_key) {
@@ -158,8 +152,9 @@ export async function chatCompletion(req, res) {
     const isStream = !!request_body.stream;
 
     if(+process.env.ENABLE_PLUGIN) {
+        const latest_message = messages.filter(e=>e.role === 'user').pop()
         const { type, value } = await userMessageHandler({
-            "message": messages.filter(e=>e.role === 'user').pop(),
+            "message": latest_message ? latest_message.content : "",
             "full_hisoty": messages
         });
 
@@ -170,7 +165,7 @@ export async function chatCompletion(req, res) {
             case "replace_resp":
                 res.send(generateResponseContent(
                     api_key, 'chat.completion', model, system_fingerprint,
-                    isStream, content, true
+                    isStream, value, true
                 ));
                 return;
             case "history":
@@ -188,6 +183,12 @@ export async function chatCompletion(req, res) {
         request_body.prompt = formatOpenAIContext(messages);
     }
 
+    if(isStream) {
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("X-Accel-Buffering", "no");
+        res.setHeader("Connection", "Keep-Alive");
+    }
     doInference(request_body, (data) => {
         const { content, stop } = data;
         if(isStream) {
@@ -235,6 +236,12 @@ export async function ragChatCompletion(req, res) {
     ])
 
     const isStream = !!request_body.stream;
+    if(isStream) {
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("X-Accel-Buffering", "no");
+        res.setHeader("Connection", "Keep-Alive");
+    }
     doInference(request_body, (data) => {
         const { content, stop } = data;
         const openai_response = generateResponseContent(

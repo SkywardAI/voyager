@@ -18,11 +18,11 @@ process.env.SYSTEM_INSTRUCTION && process.env.SYSTEM_INSTRUCTION !== '*' ? proce
 "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions."
 
 export function formatInferenceContext(history, question = null, system_included = false) {
-    let context = system_included ? "" : "<|system|>\n"+system_context+"\n";
+    let context = system_included ? "" : "<|system|>\n"+system_context+"<|end|>\n";
     context += history.map(({role, content}) => {
-        return `<|${role}|>\n${content || ''}`
+        return `<|${role}|>\n${content || ''}<|end|>`
     }).join('\n');
-    if(question) context += `\n<|user|>\n${question}`
+    if(question) context += `\n<|user|>\n${question}<|end|>`
     context += "\n<|assistant|>\n";
     return context;
 }

@@ -13,7 +13,7 @@ services:
       - ${ENG_ACCESS_PORT}
     ports:
       - ${INFERENCE_ENG_PORT}:${ENG_ACCESS_PORT}
-    command: ["-m", "models/${LANGUAGE_MODEL_NAME}","-c","8192"]
+    command: ["-m", "models/${LANGUAGE_MODEL_NAME}","-t","${NUM_THREADS_COUNT}","-c","8192"]
 
   embedding_eng:
     container_name: ${EMBEDDING_ENG}

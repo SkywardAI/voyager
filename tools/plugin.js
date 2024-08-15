@@ -56,3 +56,19 @@ export async function userMessageHandler(params) {
     return { type: "normal" }
     // =============================================
 }
+
+/**
+ * @typedef DatasetStructure
+ * @property {String} context This is the context for AI to reference, been added into system instruction
+ * @property {String} identifier Identifier for the column, not necessarily unique
+ * @property {Float[]} vector Embedding from embedding engine, can get from calculateEmbedding();
+ */
+
+/**
+ * Returns the default dataset, will be called when: database loaded AND (database is force load OR the default data is not loaded)
+ * @returns {Promise<DatasetStructure[]>}
+ */
+export async function loadDefaultDataset() {
+    // Add your own code here
+    return [];
+}

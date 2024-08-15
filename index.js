@@ -26,12 +26,19 @@ import swStats from 'swagger-stats';
 import * as swaggerUi from 'swagger-ui-express'
 import swaggerSpec from "./swagger.json" with { type: "json" };
 import { decodeEnabledAPIs, isRouteEnabled } from './tools/enabledApiDecoder.js';
+import { loadDefaultDataset } from './tools/plugin.js';
+import { loadDataset } from './database/rag-inference.js';
+import { readFileSync } from 'fs';
 
 configDotenv()
 configDotenv({path: ".env.production", override:true})
 decodeEnabledAPIs();
 
-await initDB()
+const force_load = false;
+await initDB(force_load)
+if(+process.env.LOAD_DEFAULT_DATASET) {
+    await (await loadDataset(process.env.DEFAULT_DATASET_NAME || "production_dataset", force_load))(await loadDefaultDataset())
+}
 
 const app = express();
 app.use(cors({origin: process.env.ALLOW_ORIGIN || '*'}));
@@ -60,10 +67,12 @@ if(
     process.env.HTTPS_CERT_PATH !== '*'
 ) {
     const ssl_options = {
-        key: process.env.HTTPS_KEY_PATH,
-        cert: process.env.HTTPS_CERT_PATH
+        key: readFileSync(process.env.HTTPS_KEY_PATH),
+        cert: readFileSync(process.env.HTTPS_CERT_PATH)
     }
-    if(process.env.HTTPS_CA_PATH) ssl_options.ca = process.env.HTTPS_CA_PATH;
+    if(process.env.HTTPS_CA_PATH && process.env.HTTPS_CA_PATH !== '*') {
+        ssl_options.ca = readFileSync(process.env.HTTPS_CA_PATH);
+    }
     createServer(ssl_options, app).listen(PORT, '0.0.0.0', () => {
         console.log(`VOYAGER is running on port ${PORT}, happy sailing!`)
     })

@@ -18,38 +18,58 @@ import { get } from "../tools/request.js";
 import { getTable } from "./index.js";
 import { DATASET_TABLE, SYSTEM_TABLE } from "./types.js";
 
-async function loadDatasetFromURL(dataset_name, dataset_url, system_table) {
-    system_table = system_table || await getTable(SYSTEM_TABLE);
-    const { rows, http_error } = await get('', {}, {URL: dataset_url});
-    if(http_error) return false;
-    
-    await system_table.add([{ title: "loaded_dataset_name", value: dataset_name }]);
+/**
+ * @typedef DatasetStructure
+ * @property {String} context This is the context for AI to reference, been added into system instruction
+ * @property {String} identifier Identifier for the column, not necessarily unique
+ * @property {Float[]} vector Embedding from embedding engine, can get from calculateEmbedding();
+ */
 
-    await (await getTable(DATASET_TABLE)).add(rows.map(({row})=>{
-        const { identifier, context, embedding } = row;
-        return { identifier, context, vector: embedding, dataset_name }
-    }))
-    return true;
+/**
+ * Get a dataset from url
+ * @param {String} dataset_url 
+ * the url of dataset going to load, which is a json in the format of\
+ * `{..., rows: [{ identifier: "", context: "", embedding: [...] },...]}`
+ * @returns {Promise<DatasetStructure[]>} the dataset in {@link DatasetStructure}
+ */
+export async function getDatasetFromURL(dataset_url) {
+    const { rows, http_error } = await get('', {}, {URL: dataset_url});
+    if(http_error) return [];
+
+    return rows.map(({identifier, context, embedding})=>{
+        return { identifier, context, vector: embedding }
+    })
 }
 
 /**
- * Load a dataset from given url.  
- * * This will first check whether the dataset is loaded in database, if `force` not provided and it's loaded already, it won't load again.
- * * The dataset format should be an array of object contains at least `identifier`, `context` and `identifier_embedding` properties
+ * Load a given dataset into database.
+ * If `force` specified, it will load the dataset without check whether it is already in system.
  * @param {String} dataset_name The dataset name to load
- * @param {String} dataset_url The url of dataset to load
  * @param {Boolean} force Specify whether to force load the dataset, default `false`.
- * @returns {Promise<Boolean>} If cannot get the dataset, return `false`, otherwise return `true`
+ * @returns {Promise<Promise>} A function takes a dataset array, which should in the format of `[{identifier:"",context:"",vector:[...]}]`
+ * 
+ * @example
+ * const loader = await loadDataset("<your-dataset-name>");
+ * const dataset = await getDatasetFromURL("<your-dataset-url>");
+ * await loader(dataset);
  */
-export async function loadDataset(dataset_name, dataset_url, force = false) {
-    const system_table = await getTable(SYSTEM_TABLE)
-    if(!force) {
-        const loaded_dataset = await system_table.query()
-        .where(`title="loaded_dataset_name" AND value="${dataset_name}"`).toArray();
-        // check if the given dataset loaded, if not, load the dataset
-        return !!(loaded_dataset.length || await loadDatasetFromURL(dataset_name, dataset_url, system_table))
-    } else {
-        return await loadDatasetFromURL(dataset_name, dataset_url, system_table)
+export async function loadDataset(dataset_name, force = false) {
+    const system_table = await getTable(SYSTEM_TABLE);
+    const dataset_table = await getTable(DATASET_TABLE);
+
+    const dataset_loaded = !!await system_table.query()
+    .where(`title="loaded_dataset_name" AND value="${dataset_name}"`).toArray().length;
+
+    return async function(dataset) {
+        if(!dataset_loaded || force) {
+            await dataset_table.add(dataset.map(({identifier, context, vector})=>{
+                return { identifier, context, vector, dataset_name }
+            }))
+        }
+
+        if(!dataset_loaded) {
+            await system_table.add([{title: "loaded_dataset_name", value: dataset_name}])
+        }
     }
 }
 

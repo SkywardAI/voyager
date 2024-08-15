@@ -16,7 +16,8 @@
 import { formatOpenAIContext } from "../tools/formatContext.js";
 import { generateFingerprint } from "../tools/generator.js";
 import { post } from "../tools/request.js";
-import { loadDataset, searchByMessage } from "../database/rag-inference.js";
+import { searchByMessage } from "../database/rag-inference.js";
+import { userMessageHandler } from "../tools/plugin.js";
 
 function generateResponseContent(id, object, model, system_fingerprint, stream, content, stopped) {
     const resp = {
@@ -45,104 +46,165 @@ function generateResponseContent(id, object, model, system_fingerprint, stream, 
     return resp;
 }
 
-const default_stop_keywords = ['### user:']
-
-export async function chatCompletion(req, res) {
-    const api_key = (req.headers.authorization || '').split('Bearer ').pop();
-    if(!api_key) {
-        res.status(401).send('Not Authorized');
-        return;
-    }
-
-    let {
-        messages, max_tokens, 
-        system_passed_extra_properties, 
-        ...request_body
-    } = req.body;
-    // apply default values or send error messages
-    if(!messages || !messages.length) {
-        res.status(400).send("Messages not given!");
-        return;
-    }
-    if(!max_tokens) max_tokens = 128;
-
-    let genResp = generateResponseContent;
-    if(system_passed_extra_properties) {
-        const { inference_type, extra_fields } = system_passed_extra_properties;
-        if(inference_type === "rag") {
-            const { has_background, question, answer, _distance:distance } = extra_fields;
-            if(has_background) {
-                messages.splice(-1, 0, {
-                    role: 'system', 
-                    content: `Your next answer should based on this background: the question is "${question}" and the answer is "${answer}".`
-                })
-            }
-            genResp = (...args) => {
-                const content = generateResponseContent(...args)
-                if(args[6] && has_background) {
-                    return { content, rag_context: {question, answer, distance} }
-                } else return content;
-            }
-        }
-    }
-
-
-    // format requests to llamacpp format input
-    request_body.prompt = formatOpenAIContext(messages);
-    request_body.n_predict = max_tokens;
-    if(!request_body.stop) request_body.stop = [...default_stop_keywords];
-
-    // extra
-    const system_fingerprint = generateFingerprint();
-    const model = request_body.model || process.env.LANGUAGE_MODEL_NAME
-
-    if(request_body.stream) {
+/**
+ * Post to inference engine
+ * @param {Object} req_body The request body to be sent
+ * @param {Function} callback Callback function, takes one parameter contains parsed response json 
+ * @param {Boolean} isStream To set the callback behaviour
+ */
+async function doInference(req_body, callback, isStream) {
+    if(isStream) {
         res.setHeader("Content-Type", "text/event-stream");
         res.setHeader("Cache-Control", "no-cache");
         res.setHeader("X-Accel-Buffering", "no");
         res.setHeader("Connection", "Keep-Alive");
         
-        const eng_resp = await post('completion', { body: request_body }, { getJSON: false });
+        const eng_resp = await post('completion', { body: req_body }, { getJSON: false });
         const reader = eng_resp.body.pipeThrough(new TextDecoderStream()).getReader();
         while(true) {
             const { value, done } = await reader.read();
             if(done) break;
             const data = value.split("data: ").pop()
-            const json_data = JSON.parse(data)
-            const { content, stop } = json_data;
-            res.write(JSON.stringify(genResp(api_key, 'chat.completion.chunk', model, system_fingerprint, true, content, stop))+'\n\n');
+            callback(JSON.parse(data));
         }
-        res.end();
     } else {
-        const eng_resp = await post('completion', { body: request_body });
-        const { model, content } = eng_resp;
-        const response_json = genResp(
-            api_key, 'chat.completion', model, system_fingerprint,
-            false, content, true
-        )
-        res.send(response_json);
+        const eng_resp = await post('completion', { body: req_body });
+        if(eng_resp.http_error) return;
+        callback(eng_resp);
     }
 }
 
-export async function ragChatCompletion(req, res) {
-    const { dataset_name, dataset_url } = req.body;
-    if(!dataset_name || !dataset_url) {
-        res.status(400).send("Dataset information not specified.");
+function validateAPIKey(api_key) {
+    // TODO: do something with api_key;
+    if(!api_key) return false;
+    return true;
+}
+
+function retrieveData(req_header, req_body) {
+    // retrieve api key
+    const api_key = (req_header.authorization || '').split('Bearer ').pop();
+    if(!validateAPIKey(api_key)) {
+        return { error: true, status: 401, message: "Not Authorized" }
     }
 
-    await loadDataset(dataset_name, dataset_url);
-    if(!req.body.messages || !req.body.messages.length) {
-        res.status(400).send("Messages not given!");
+    // get attributes required special consideration
+    let { messages, max_tokens, ...request_body } = req_body;
+
+    // validate messages
+    if(!messages || !messages.length) {
+        return { error: true, status: 422, message: "Messages not given!" }
+    }
+
+    // apply n_predict value
+    if(!max_tokens) max_tokens = 128;
+    request_body.n_predict = max_tokens;
+
+    // apply stop value
+    if(!req_body.stop) request_body.stop = [...default_stop_keywords];
+
+    // generated fields
+    const system_fingerprint = generateFingerprint();
+    const model = request_body.model || process.env.LANGUAGE_MODEL_NAME
+
+
+    return { error: false, body: {request_body, messages, api_key, system_fingerprint, model} }
+
+}
+
+const default_stop_keywords = ["<|endoftext|>", "<|end|>", "<|user|>", "<|assistant|>"]
+
+export async function chatCompletion(req, res) {
+    const {error, body, status, message} = retrieveData(req.headers, req.body);
+    if(error) {
+        res.status(status).send(message);
         return;
     }
-    const latest_message = req.body.messages.slice(-1)[0].content;
-    const rag_result = await searchByMessage(dataset_name, latest_message);
-    req.body.system_passed_extra_properties = {
-        inference_type: "rag",
-        extra_fields: {
-            has_background: !!rag_result,
-            ...(rag_result || {})
+
+    const { api_key, model, system_fingerprint, request_body, messages } = body
+    const isStream = !!request_body.stream;
+
+    if(+process.env.ENABLE_PLUGIN) {
+        const { type, value } = await userMessageHandler({
+            "message": messages.filter(e=>e.role === 'user').pop(),
+            "full_hisoty": messages
+        });
+
+        switch(type) {
+            case "error":
+                res.status(403).send(value);
+                return;
+            case "replace_resp":
+                res.send(generateResponseContent(
+                    api_key, 'chat.completion', model, system_fingerprint,
+                    isStream, content, true
+                ));
+                return;
+            case "history":
+                request_body.prompt = formatOpenAIContext(value);
+                break;
+            case "system_instruction":
+                messages.push(value);
+                break;
+            case "normal": default:
+                break;
         }
     }
-    chatCompletion(req, res);
+
+    if(!request_body.prompt) {
+        request_body.prompt = formatOpenAIContext(messages);
+    }
+
+    doInference(request_body, (data) => {
+        const { content, stop } = data;
+        if(isStream) {
+            res.write(JSON.stringify(
+                generateResponseContent(
+                    api_key, 'chat.completion.chunk', model, system_fingerprint, isStream, content, stop
+                )
+            )+'\n\n');
+            if(stop) res.end();
+        } else {
+            res.send(generateResponseContent(
+                api_key, 'chat.completion', model, system_fingerprint,
+                isStream, content, true
+            ))
+        }
+    }, isStream)
+}
+
+export async function ragChatCompletion(req, res) {
+    const {error, body, status, message} = retrieveData(req.headers, req.body);
+    if(error) {
+        res.status(status).send(message);
+        return;
+    }
+    const { dataset_name, ...request_body } = body.request_body;
+    if(!dataset_name) {
+        res.status(422).send("Dataset name not specified.");
+    }
+    const { api_key, model, system_fingerprint, messages } = body
+
+    const latest_message = messages.slice(-1)[0].content;
+    const rag_result = await searchByMessage(dataset_name, latest_message);
+
+    request_body.prompt = formatOpenAIContext([
+        ...messages, 
+        { role: "system", content: `This background information is useful for your next answer: "${rag_result.context}"` }
+    ])
+
+    const isStream = !!request_body.stream;
+    doInference(request_body, (data) => {
+        const { content, stop } = data;
+        const openai_response = generateResponseContent(
+            api_key, 'chat.completion.chunk', model, system_fingerprint, true, content, stop
+        )
+        const rag_response = stop ? { content: openai_response, rag_context: rag_result } : openai_response;
+
+        if(isStream) {
+            res.write(JSON.stringify(rag_response)+'\n\n');
+            if(stop) res.end();
+        } else {
+            res.send(rag_response);
+        }
+    }, isStream)
 }

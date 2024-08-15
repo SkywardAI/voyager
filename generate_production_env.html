@@ -179,6 +179,9 @@ function saveEnv(evt) {
     const HTTPS_CA_PATH = evt.target.https_ca.value || "*";
     
     const SYSTEM_INSTRUCTION = evt.target.system_instruction.value || "*";
+
+    const LOAD_DEFAULT_DATASET = +evt.target.load_default_dataset.checked;
+    const DEFAULT_DATASET_NAME = evt.target.default_dataset_name.value || "production_dataset";
     
     let AVAILABLE_APIS = ''
     if(evt.target.available_api_all.checked) {
@@ -201,13 +204,15 @@ function saveEnv(evt) {
     const env_string = 
 `ALLOW_ORIGIN=${ALLOW_ORIGIN||'*'}
 STATIC_API_KEY_ENABLED=${STATIC_API_KEY_ENABLED}
-ENABLE_HTTPS=${ENABLE_HTTPS}
 ENABLE_PLUGIN=${ENABLE_PLUGIN}
+ENABLE_HTTPS=${ENABLE_HTTPS}
 HTTPS_KEY_PATH=${HTTPS_KEY_PATH}
 HTTPS_CERT_PATH=${HTTPS_CERT_PATH}
 HTTPS_CA_PATH=${HTTPS_CA_PATH}
 SYSTEM_INSTRUCTION=${SYSTEM_INSTRUCTION}
-AVAILABLE_APIS=${AVAILABLE_APIS}`;
+AVAILABLE_APIS=${AVAILABLE_APIS}
+LOAD_DEFAULT_DATASET=${LOAD_DEFAULT_DATASET}
+DEFAULT_DATASET_NAME=${DEFAULT_DATASET_NAME}`;
 
     const env_file = new Blob([env_string], {type: 'text/plain'});
     const url = URL.createObjectURL(env_file);
@@ -274,6 +279,20 @@ window.onload = load;
             <div class="one-line">
                 <div class="title">System instruction: </div>
                 <input type="text" name="system_instruction">
+            </div>
+        </section>
+        <section>
+            <h3>Default Dataset</h3>
+            <div class="description">
+                Set load default dataset or not, and specify dataset name.<br>
+                Please implement your own dataset generator in <code>/tools/plugin.js</code> use the function <code>loadDefaultDataset()</code>
+            </div>
+            <div class="one-line">
+                <div class="title">Enable load default dataset: </div>
+                <input type="checkbox" name="load_default_dataset">
+            </div><div class="one-line">
+                <div class="title">Set default dataset name: </div>
+                <input type="text" name="default_dataset_name" placeholder="production_dataset">
             </div>
         </section>
         <section>

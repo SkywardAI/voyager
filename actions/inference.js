@@ -77,6 +77,9 @@ async function doInference(req_body, callback, isStream) {
 function validateAPIKey(api_key) {
     // TODO: do something with api_key;
     if(!api_key) return false;
+    if(+process.env.STATIC_API_KEY_ENABLED && process.env.STATIC_API_KEY) {
+        if(api_key !== process.env.STATIC_API_KEY) return false;
+    }
     return true;
 }
 

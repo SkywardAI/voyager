@@ -13,21 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const system_context = "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions."
+const system_context = 
+process.env.SYSTEM_INSTRUCTION !== '*' ? process.env.SYSTEM_INSTRUCTION :
+"A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions."
 
-export function formatInferenceContext(history, question) {
-    let context = system_context;
-    context += history.map(({role, message}) => {
-        return `### ${role === 'user' ? 'Human' : 'Assistant'}: ${message || ''}`
+export function formatInferenceContext(history, question = null, system_included = false) {
+    let context = system_included ? "" : "<|system|>\n"+system_context+"\n";
+    context += history.map(({role, content}) => {
+        return `<|${role}|>\n${content || ''}`
     }).join('\n');
-    context += `\n### Human: ${question}\n### Assistant:`;
+    if(question) context += `\n<|user|>\n${question}`
+    context += "\n<|assistant|>\n";
     return context;
 }
 
 export function formatOpenAIContext(messages) {
-    let context = messages.map(({role, content}) => {
-        return `### ${role}: ${content}`;
-    }).join("\n");
-    context += '\n### assistant:'
-    return context;
+    return formatInferenceContext(messages, null, true);
 }

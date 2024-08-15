@@ -172,6 +172,7 @@ function saveEnv(evt) {
     }
     const STATIC_API_KEY_ENABLED = +evt.target.static_api_key_enabled.checked;
     const ENABLE_DEFAULT_RESPONSE = +evt.target.enable_default_response.checked;
+    const ENABLE_PLUGIN = +evt.target.enable_plugin.checked;
 
     const ENABLE_HTTPS = +evt.target.https_enabled.checked;
     const HTTPS_KEY_PATH = evt.target.https_key.value || "*";
@@ -201,6 +202,7 @@ function saveEnv(evt) {
 STATIC_API_KEY_ENABLED=${STATIC_API_KEY_ENABLED}
 ENABLE_DEFAULT_RESPONSE=${ENABLE_DEFAULT_RESPONSE}
 ENABLE_HTTPS=${ENABLE_HTTPS}
+ENABLE_PLUGIN=${ENABLE_PLUGIN}
 HTTPS_KEY_PATH=${HTTPS_KEY_PATH}
 HTTPS_CERT_PATH=${HTTPS_CERT_PATH}
 HTTPS_CA_PATH=${HTTPS_CA_PATH}
@@ -250,6 +252,17 @@ window.onload = load;
             <div class="one-line https">
                 <div class="title">Path to <code>CA</code>:</div>
                 <input type="text" name="https_ca">
+            </div>
+        </section>
+        <section>
+            <h3>Enable Plugin</h3>
+            <div class="description">
+                Enables plugin to modify the action of <code>/v1/chat/completions</code>.<br>
+                Please enable this and write your own plugin in <code>/tools/plugin.js</code>
+            </div>
+            <div class="one-line">
+                <div class="title">Enables Plugin: </div>
+                <input type="checkbox" name="enable_plugin">
             </div>
         </section>
         <section>

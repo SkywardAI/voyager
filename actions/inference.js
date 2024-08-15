@@ -95,20 +95,6 @@ async function doInference(req_body, callback, isStream) {
         callback(eng_resp);
     }
     res.end();
-  } else {
-    const eng_resp = await post("completion", { body: request_body });
-    const { model, content } = eng_resp;
-    const response_json = genResp(
-      api_key,
-      "chat.completion",
-      model,
-      system_fingerprint,
-      false,
-      content,
-      true
-    );
-    res.send(response_json);
-  }
 }
 
 function validateAPIKey(api_key) {
@@ -157,8 +143,8 @@ const default_stop_keywords = ["<|endoftext|>", "<|end|>", "<|user|>", "<|assist
  * Handles a chat completion request, generating a response based on the input messages.
  *
  * @async
- * @param {Object} req - The HTTP request object.
- * @param {Object} res - The HTTP response object.
+ * @param {Request} req - The HTTP request object.
+ * @param {Response} res - The HTTP response object.
  * @returns {Promise<void>} A promise that resolves when the response is sent.
  */
 export async function chatCompletion(req, res) {
@@ -224,8 +210,8 @@ export async function chatCompletion(req, res) {
  * Handles a RAG-based (Retrieval-Augmented Generation) chat completion request.
  *
  * @async
- * @param {Object} req - The HTTP request object.
- * @param {Object} res - The HTTP response object.
+ * @param {Request} req - The HTTP request object.
+ * @param {Response} res - The HTTP response object.
  * @returns {Promise<void>} A promise that resolves when the response is sent.
  */
 export async function ragChatCompletion(req, res) {

@@ -14,7 +14,7 @@
 // limitations under the License.
 
 const system_context = 
-process.env.SYSTEM_INSTRUCTION !== '*' ? process.env.SYSTEM_INSTRUCTION :
+process.env.SYSTEM_INSTRUCTION && process.env.SYSTEM_INSTRUCTION !== '*' ? process.env.SYSTEM_INSTRUCTION :
 "A chat between a curious human and an artificial intelligence assistant. The assistant gives helpful, detailed, and polite answers to the human's questions."
 
 export function formatInferenceContext(history, question = null, system_included = false) {

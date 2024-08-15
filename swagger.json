@@ -614,7 +614,7 @@
                           "assistant"
                         ]
                       },
-                      "message": {
+                      "content": {
                         "content": "string",
                         "examples": [
                           "Hi, "

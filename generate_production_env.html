@@ -171,13 +171,14 @@ function saveEnv(evt) {
         }
     }
     const STATIC_API_KEY_ENABLED = +evt.target.static_api_key_enabled.checked;
-    const ENABLE_DEFAULT_RESPONSE = +evt.target.enable_default_response.checked;
     const ENABLE_PLUGIN = +evt.target.enable_plugin.checked;
 
     const ENABLE_HTTPS = +evt.target.https_enabled.checked;
     const HTTPS_KEY_PATH = evt.target.https_key.value || "*";
     const HTTPS_CERT_PATH = evt.target.https_certificate.value || "*";
     const HTTPS_CA_PATH = evt.target.https_ca.value || "*";
+    
+    const SYSTEM_INSTRUCTION = evt.target.system_instruction.value || "*";
     
     let AVAILABLE_APIS = ''
     if(evt.target.available_api_all.checked) {
@@ -200,12 +201,12 @@ function saveEnv(evt) {
     const env_string = 
 `ALLOW_ORIGIN=${ALLOW_ORIGIN||'*'}
 STATIC_API_KEY_ENABLED=${STATIC_API_KEY_ENABLED}
-ENABLE_DEFAULT_RESPONSE=${ENABLE_DEFAULT_RESPONSE}
 ENABLE_HTTPS=${ENABLE_HTTPS}
 ENABLE_PLUGIN=${ENABLE_PLUGIN}
 HTTPS_KEY_PATH=${HTTPS_KEY_PATH}
 HTTPS_CERT_PATH=${HTTPS_CERT_PATH}
 HTTPS_CA_PATH=${HTTPS_CA_PATH}
+SYSTEM_INSTRUCTION=${SYSTEM_INSTRUCTION}
 AVAILABLE_APIS=${AVAILABLE_APIS}`;
 
     const env_file = new Blob([env_string], {type: 'text/plain'});
@@ -261,8 +262,18 @@ window.onload = load;
                 Please enable this and write your own plugin in <code>/tools/plugin.js</code>
             </div>
             <div class="one-line">
-                <div class="title">Enables Plugin: </div>
+                <div class="title">Enables plugins: </div>
                 <input type="checkbox" name="enable_plugin">
+            </div>
+        </section>
+        <section>
+            <h3>System Instruction</h3>
+            <div class="description">
+                Specify the default instruction for AI, won't work when use OpenAI like request format.
+            </div>
+            <div class="one-line">
+                <div class="title">System instruction: </div>
+                <input type="text" name="system_instruction">
             </div>
         </section>
         <section>
@@ -274,18 +285,6 @@ window.onload = load;
             <div class="one-line">
                 <div class="title">Enable static API-Key:</div>
                 <input type="checkbox" name="static_api_key_enabled">
-            </div>
-        </section>
-        <section>
-            <h3>Enable Default Response</h3>
-            <div class="description">
-                Set to true to allow AI generate responses normally.<br>
-                Otherwise AI will only response with RAG related questions.<br>
-                Remember to enable <code>RAG Inference Completions</code> route if you want to disable default response.
-            </div>
-            <div class="one-line">
-                <div class="title">Enable default response:</div>
-                <input type="checkbox" name="enable_default_response" checked>
             </div>
         </section>
         <section>

@@ -15,6 +15,15 @@ import { post } from "../tools/request.js";
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+export async function calculateEmbedding(content) {
+    const { embedding, http_error } = await post('embedding', {body: {
+        content
+    }}, { eng: "embedding" });
+
+    if(!http_error) return embedding;
+    else return null;
+}
+
 export async function embeddings(req, res) {
     if(!req.headers.authorization) {
         res.status(401).send("Not Authorized!");
@@ -26,11 +35,9 @@ export async function embeddings(req, res) {
         res.status(400).send("Input sentence not specified!");
     }
 
-    const { embedding, http_error } = await post('embedding', {body: {
-        content: input
-    }}, { eng: "embedding" });
+    const embedding = calculateEmbedding(input);
 
-    if(http_error) {
+    if(!embedding) {
         res.status(500).send("Embedding Engine Internal Server Error")
         return;
     }

@@ -141,7 +141,7 @@
       "post": {
         "tags": ["Chat"],
         "summary": "AI chat completion with RAG dataset.",
-        "description": "Start a conversation with given messages and QAs from dataset as context",
+        "description": "Start a conversation with given messages and QAs from dataset as context. Please load dataset and pass the correct dataset name to make it work.",
         "requestBody": {
           "required": true,
           "content": {
@@ -154,8 +154,7 @@
                   { "role": "system", "content": "You are a helpful assistant who helps users solve their questions." },
                   { "role": "user", "content": "tell me something interest about massachusetts" }
                 ],
-                "dataset_name": "aisuko/squad01",
-                "dataset_url": "https://datasets-server.huggingface.co/rows?dataset=aisuko%2Fsquad01&config=default&split=validation&offset=0&length=100"
+                "dataset_name": "aisuko/squad01"
               }
             }
           }
@@ -172,15 +171,15 @@
                     "rag_context": {
                       "type": "object",
                       "properties": {
-                        "question": {
+                        "context": {
                           "type": "string",
                           "examples": ["In what year did Massachusetts first require children to be educated in schools?"]
                         },
-                        "answer": {
+                        "identifier": {
                           "type": "string",
                           "examples": ["1852"]
                         },
-                        "distance": {
+                        "_distance": {
                           "type": "number",
                           "examples": [0.27701786160469055]
                         }
@@ -407,7 +406,7 @@
             "description": "When AI outputs the end pattern, end response.",
             "items": {
               "type": "string",
-              "examples": ["### user:"]
+              "examples": ["<|user|>"]
             }
           },
           "stream": {
@@ -451,7 +450,7 @@
             "description": "When AI outputs the end pattern, end response.",
             "items": {
               "type": "string",
-              "examples": ["### user:"]
+              "examples": ["<|user|>"]
             }
           },
           "stream": {
@@ -463,18 +462,11 @@
             "examples": [
               "aisuko/squad01"
             ]
-          },
-          "dataset_url": {
-            "type": "string",
-            "examples": [
-              "https://datasets-server.huggingface.co/rows?dataset=aisuko%2Fsquad01&config=default&split=validation&offset=0&length=100"
-            ]
           }
         },
         "required": [
           "messages",
-          "dataset_name",
-          "dataset_url"
+          "dataset_name"
         ]
       },
       "CompletionResponseEntire": {

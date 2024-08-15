@@ -36,8 +36,8 @@ export async function initDB(force = false) {
     await db.createEmptyTable(DATASET_TABLE, new Schema([
         new Field("vector", new FixedSizeList(384, new Field("item", new Float32(), true)), false),
         new Field("dataset_name", new Utf8()),
-        new Field("question", new Utf8()),
-        new Field("answer", new Utf8())
+        new Field("context", new Utf8()),
+        new Field("identifier", new Utf8())
     ]), open_options);
     // create or re-open api key table
     await db.createEmptyTable(API_KEY_TABLE, new Schema([

@@ -1,6 +1,8 @@
 // coding=utf-8
 
 import { post } from "../tools/request.js";
+import { extractAPIKeyFromRequest, validateAPIKey } from "../tools/apiKey.js";
+import { getDatasetFromURL, loadDataset, parseDatasetWithoutVector } from "../database/rag-inference.js";
 
 // Copyright [2024] [SkywardAI]
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +27,7 @@ export async function calculateEmbedding(content) {
 }
 
 export async function embeddings(req, res) {
-    if(!req.headers.authorization) {
+    if(!validateAPIKey(extractAPIKeyFromRequest(req))) {
         res.status(401).send("Not Authorized!");
         return;
     }
@@ -57,4 +59,33 @@ export async function embeddings(req, res) {
             total_tokens: 0
         }
     })
+}
+
+/**
+ * function for upload dataset
+ * @param {Request} req 
+ * @param {Response} res 
+ */
+export async function uploadDataset(req, res) {
+    if(!validateAPIKey(extractAPIKeyFromRequest(req))) {
+        res.status(401).send("Not Authorized!");
+        return;
+    }
+
+    const { name, json, url, force } = req.body;
+    if(!name || (!json && !url)) {
+        res.status(422).send("Please specify dataset name and one choice of json / url.");
+        return;
+    }
+
+    const loader = await loadDataset(name, force);
+    if(loader) {
+        const dataset = url ? 
+            await getDatasetFromURL(url) : 
+            await parseDatasetWithoutVector(json);
+            
+        await loader(dataset);
+    }
+
+    res.status(200).send("Dataset loaded");
 }

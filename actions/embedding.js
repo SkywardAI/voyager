@@ -37,7 +37,7 @@ export async function embeddings(req, res) {
         res.status(400).send("Input sentence not specified!");
     }
 
-    const embedding = calculateEmbedding(input);
+    const embedding = await calculateEmbedding(input);
 
     if(!embedding) {
         res.status(500).send("Embedding Engine Internal Server Error")
@@ -83,7 +83,7 @@ export async function uploadDataset(req, res) {
         const dataset = url ? 
             await getDatasetFromURL(url) : 
             await parseDatasetWithoutVector(json);
-            
+
         await loader(dataset);
     }
 

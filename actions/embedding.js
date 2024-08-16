@@ -80,11 +80,15 @@ export async function uploadDataset(req, res) {
 
     const loader = await loadDataset(name, force);
     if(loader) {
-        const dataset = url ? 
-            await getDatasetFromURL(url) : 
-            await parseDatasetWithoutVector(json);
+        try {
+            const dataset = url ? 
+                await getDatasetFromURL(url) : 
+                await parseDatasetWithoutVector(json);
 
-        await loader(dataset);
+            await loader(dataset);
+        } catch(error) {
+            res.status(500).send(error.message)
+        }
     }
 
     res.status(200).send("Dataset loaded");

@@ -72,13 +72,14 @@ export async function parseDatasetWithoutVector(dataset) {
 
 /**
  * Load a given dataset into database.
- * If `force` specified, it will load the dataset without check whether it is already in system.
+ * If `force` specified, it will delete the old loaded dataset if applicable and load the dataset.
  * @param {String} dataset_name The dataset name to load
  * @param {Boolean} force Specify whether to force load the dataset, default `false`.
  * @returns {Promise<Promise|null>} 
  * If dataset is loaded and `force` not specified, this will return null.\
- * Otherwise returns function takes a dataset array, which should in the format of\
- * `[{identifier:"",context:"",vector:[...]}]`
+ * Otherwise returns function takes parameters:
+ * * `dataset` - The dataset to be loaded, in the format of `[{identifier:"",context:"",vector:[...]}]`
+ * * `keep_records` - Optional, default `false`, set to `true` to prevent remove existed data from DB if `force` is `true`
  * 
  * @example
  * const loader = await loadDataset("<your-dataset-name>");
@@ -96,12 +97,16 @@ export async function loadDataset(dataset_name, force = false) {
 
     if(dataset_loaded && !force) return null;
 
-    return async function(dataset) {
-        const adding_dataset = 
-        dataset.map(({identifier, context, vector})=>{
-            return { identifier, context, vector, dataset_name }
-        })
-        await dataset_table.add(adding_dataset)
+    return async function(dataset, keep_records = false) {
+        if(dataset_loaded && force && !keep_records) {
+            await dataset_table.delete(`dataset_name="${dataset_name}"`);
+        }
+
+        await dataset_table.add(
+            dataset.map(({identifier, context, vector})=>{
+                return { identifier, context, vector, dataset_name }
+            }
+        ))
 
         if(!dataset_loaded) {
             await system_table.add([{title: "loaded_dataset_name", value: dataset_name}])

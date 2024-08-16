@@ -544,7 +544,14 @@
           },
           "force": {
             "type": "boolean",
-            "description": "If specified, force load dataset into database.",
+            "description": "If specified, delete previous records of current dataset and load dataset into database.",
+            "examples": [
+              false
+            ]
+          },
+          "keep_records": {
+            "type": "boolean",
+            "description": "If `force` is specified and `keep_records` is `true`, keeps records and load data into database. This can cause duplicate data in DB.",
             "examples": [
               false
             ]

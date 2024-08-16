@@ -72,7 +72,7 @@ export async function uploadDataset(req, res) {
         return;
     }
 
-    const { name, json, url, force } = req.body;
+    const { name, json, url, force, keep_records } = req.body;
     if(!name || (!json && !url)) {
         res.status(422).send("Please specify dataset name and one choice of json / url.");
         return;
@@ -85,7 +85,7 @@ export async function uploadDataset(req, res) {
                 await getDatasetFromURL(url) : 
                 await parseDatasetWithoutVector(json);
 
-            await loader(dataset);
+            await loader(dataset, force && keep_records);
         } catch(error) {
             res.status(500).send(error.message)
         }

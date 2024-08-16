@@ -27,7 +27,7 @@
     },
     {
       "name": "Embedding",
-      "description": "v1 Token APIs"
+      "description": "v1 Embedding APIs"
     },
     {
       "name": "Token",

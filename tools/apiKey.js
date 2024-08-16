@@ -53,3 +53,43 @@ export async function updateKeyUsage(key){
         return "Could not find key in table!"
     }
 }
+
+/**
+ * Check whether passed api_key is validate, usually comes from authorization header.
+ * @param {String} api_key 
+ * @returns {Boolean}
+ * 
+ * @example
+ * const api_key_validated = validateAPIKey(extractAPIKeyFromRequest(request))
+ */
+export function validateAPIKey(api_key) {
+    if(!api_key) return false;
+
+    if(+process.env.STATIC_API_KEY_ENABLED && process.env.STATIC_API_KEY) {
+        if(api_key !== process.env.STATIC_API_KEY) return false;
+    }
+    return true;
+}
+
+/**
+ * Extract api_key from request.headers.authorization
+ * @param {Request} request The request object
+ * @returns {String|null} The api key or null if there's no valid api_key found
+ */
+export function extractAPIKeyFromRequest(request) {
+    return extractAPIKeyFromHeader(request.headers);
+}
+
+/**
+ * Extract api_key from authorization attribute in passed header
+ * @param {Request.header} header the header of request
+ * @returns {String|null} The api key or null if there's no valid api_key found
+ */
+export function extractAPIKeyFromHeader(header) {
+    if(typeof header !== "object") return null;
+
+    const {authorization} = header;
+    if(!authorization || !authorization.startsWith("Bearer ")) return null;
+    const api_key = authorization.split("Bearer ").pop();
+    return api_key || null;
+}

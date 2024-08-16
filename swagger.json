@@ -154,7 +154,7 @@
                   { "role": "system", "content": "You are a helpful assistant who helps users solve their questions." },
                   { "role": "user", "content": "tell me something interest about massachusetts" }
                 ],
-                "dataset_name": "aisuko/squad01"
+                "dataset_name": "aisuko/squad01-v2"
               }
             }
           }
@@ -173,15 +173,15 @@
                       "properties": {
                         "context": {
                           "type": "string",
-                          "examples": ["In what year did Massachusetts first require children to be educated in schools?"]
+                          "examples": ["Questioin:In what year did Massachusetts first require children to be educated in schools? Answer:1852"]
                         },
                         "identifier": {
                           "type": "string",
-                          "examples": ["1852"]
+                          "examples": ["Private_school"]
                         },
                         "_distance": {
                           "type": "number",
-                          "examples": [0.27701786160469055]
+                          "examples": [0.4810483455657959]
                         }
                       }
                     }
@@ -315,6 +315,43 @@
           },
           "500": {
             "description": "Internal server error"
+          }
+        },
+        "security": [
+          {"api_key": []}
+        ]
+      }
+    },
+    "/v1/embeddings/dataset": {
+      "post": {
+        "tags": ["Embedding"],
+        "summary": "Loads dataset into database",
+        "description": "Load a dataset from url or directly pass a dataset array. Requires either url or json specified.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadDatasetRequest",
+                "required": [
+                  "name"
+                ],
+                "example":{
+                  "name": "aisuko/squad01-v2",
+                  "url": "https://datasets-server.huggingface.co/rows?dataset=aisuko%2Fsquad01-v2&config=default&split=validation&offset=0&length=100"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully loaded dataset"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "422": {
+            "description": "`Name` or neither `url` nor `json` not specified."
           }
         },
         "security": [
@@ -460,7 +497,7 @@
           "dataset_name": {
             "type": "string",
             "examples": [
-              "aisuko/squad01"
+              "aisuko/squad01-v2"
             ]
           }
         },
@@ -468,6 +505,51 @@
           "messages",
           "dataset_name"
         ]
+      },
+      "UploadDatasetRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Dataset name",
+            "examples": ["aisuko/squad01-v2"]
+          },
+          "url": {
+            "type": "string",
+            "description": "URL to download dataset",
+            "examples": [
+              "https://datasets-server.huggingface.co/rows?dataset=aisuko%2Fsquad01-v2&config=default&split=validation&offset=0&length=100"
+            ]
+          },
+          "json": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "identifier": {
+                  "type": "string",
+                  "description": "Identifier of the row, not necessarily unique",
+                  "examples":[
+                    "Chloroplast"
+                  ]
+                },
+                "context": {
+                  "type": "string",
+                  "description": "Context to store in vector DB and pass to inference engine.",
+                  "examples": [
+                    "Questioin:When were stromules discovered? Answer:1962"
+                  ]
+                }
+              }
+            }
+          },
+          "force": {
+            "type": "boolean",
+            "description": "If specified, force load dataset into database.",
+            "examples": [
+              false
+            ]
+          }
+        }
       },
       "CompletionResponseEntire": {
         "description": "Response of completion, where `stream=false`",

@@ -26,6 +26,12 @@ import { DATASET_TABLE, SYSTEM_TABLE } from "./types.js";
  */
 
 /**
+ * @typedef DatasetWithoutVectorStructure
+ * @property {String} context This is the context for AI to reference, been added into system instruction
+ * @property {String} identifier Identifier for the column, not necessarily unique
+ */
+
+/**
  * Get a dataset from url
  * @param {String} dataset_url 
  * the url of dataset going to load, which is a json in the format of\
@@ -36,9 +42,32 @@ export async function getDatasetFromURL(dataset_url) {
     const { rows, http_error } = await get('', {}, {URL: dataset_url});
     if(http_error) return [];
 
-    return rows.map(({identifier, context, embedding})=>{
+    return rows.map(({row})=>{
+        const {identifier, context, embedding} = row;
         return { identifier, context, vector: embedding }
     })
+}
+
+/**
+ * Get a dataset from array
+ * @param {DatasetWithoutVectorStructure[]} dataset 
+ * The dataset to be passed, in the format of `[{ identifier: "", context: "" },...]`
+ * @returns {Promise<DatasetStructure[]>} The dataset in {@link DatasetStructure}
+ */
+export async function parseDatasetWithoutVector(dataset) {
+    const parsed_dataset = [];
+
+    for(const data of dataset) {
+        const { context, identifier }  = data;
+        const vector = await calculateEmbedding(context);
+        if(vector) {
+            parsed_dataset.push({
+                context, identifier, vector
+            })
+        }
+    }
+
+    return parsed_dataset;
 }
 
 /**
@@ -46,26 +75,33 @@ export async function getDatasetFromURL(dataset_url) {
  * If `force` specified, it will load the dataset without check whether it is already in system.
  * @param {String} dataset_name The dataset name to load
  * @param {Boolean} force Specify whether to force load the dataset, default `false`.
- * @returns {Promise<Promise>} A function takes a dataset array, which should in the format of `[{identifier:"",context:"",vector:[...]}]`
+ * @returns {Promise<Promise|null>} 
+ * If dataset is loaded and `force` not specified, this will return null.\
+ * Otherwise returns function takes a dataset array, which should in the format of\
+ * `[{identifier:"",context:"",vector:[...]}]`
  * 
  * @example
  * const loader = await loadDataset("<your-dataset-name>");
- * const dataset = await getDatasetFromURL("<your-dataset-url>");
- * await loader(dataset);
+ * if(loader) {
+ *     const dataset = await getDatasetFromURL("<your-dataset-url>");
+ *     await loader(dataset);
+ * }
  */
 export async function loadDataset(dataset_name, force = false) {
     const system_table = await getTable(SYSTEM_TABLE);
     const dataset_table = await getTable(DATASET_TABLE);
 
-    const dataset_loaded = !!await system_table.query()
-    .where(`title="loaded_dataset_name" AND value="${dataset_name}"`).toArray().length;
+    const dataset_loaded = !!(await system_table.query()
+    .where(`title="loaded_dataset_name" AND value="${dataset_name}"`).toArray()).length;
+
+    if(dataset_loaded && !force) return null;
 
     return async function(dataset) {
-        if(!dataset_loaded || force) {
-            await dataset_table.add(dataset.map(({identifier, context, vector})=>{
-                return { identifier, context, vector, dataset_name }
-            }))
-        }
+        const adding_dataset = 
+        dataset.map(({identifier, context, vector})=>{
+            return { identifier, context, vector, dataset_name }
+        })
+        await dataset_table.add(adding_dataset)
 
         if(!dataset_loaded) {
             await system_table.add([{title: "loaded_dataset_name", value: dataset_name}])
@@ -97,7 +133,7 @@ export async function searchByEmbedding(dataset_name, vector, max_distance = 0.8
     ).search(vector).distanceType("cosine").where(`dataset_name = "${dataset_name}"`)
     .limit(max_results).toArray());
 
-    if(embedding_result) {
+    if(embedding_result && embedding_result.length) {
         if(max_results === 1) {
             const { identifier, context, _distance } = embedding_result.pop();
             if(_distance >= max_distance) return null;

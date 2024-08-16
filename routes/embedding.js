@@ -14,12 +14,14 @@
 // limitations under the License.
 
 import { Router } from "express";
-import { embeddings } from "../actions/embedding.js";
+import { embeddings, uploadDataset } from "../actions/embedding.js";
+import { isRouteEnabled } from "../tools/enabledApiDecoder.js";
 
 export default function embeddingRoute() {
     const router = Router();
 
-    router.post("/", embeddings);
+    isRouteEnabled("embedding", "index") && router.post("/", embeddings);
+    isRouteEnabled("embedding", "dataset") && router.post("/dataset", uploadDataset);
 
     return router;
 }

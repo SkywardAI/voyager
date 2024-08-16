@@ -18,6 +18,7 @@ import { generateFingerprint } from "../tools/generator.js";
 import { post } from "../tools/request.js";
 import { searchByMessage } from "../database/rag-inference.js";
 import { userMessageHandler } from "../tools/plugin.js";
+import { extractAPIKeyFromHeader, validateAPIKey } from "../tools/apiKey.js";
 
 /**
  * Generates a response content object for chat completion.
@@ -91,18 +92,9 @@ async function doInference(req_body, callback, isStream) {
     }
 }
 
-function validateAPIKey(api_key) {
-    // TODO: do something with api_key;
-    if(!api_key) return false;
-    if(+process.env.STATIC_API_KEY_ENABLED && process.env.STATIC_API_KEY) {
-        if(api_key !== process.env.STATIC_API_KEY) return false;
-    }
-    return true;
-}
-
 function retrieveData(req_header, req_body) {
     // retrieve api key
-    const api_key = (req_header.authorization || '').split('Bearer ').pop();
+    const api_key = extractAPIKeyFromHeader(req_header);
     if(!validateAPIKey(api_key)) {
         return { error: true, status: 401, message: "Not Authorized" }
     }

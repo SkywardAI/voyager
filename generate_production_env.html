@@ -196,7 +196,8 @@ function saveEnv(evt) {
         AVAILABLE_APIS += '.';
         AVAILABLE_APIS += +evt.target.available_api_token.checked;
         AVAILABLE_APIS += '.';
-        AVAILABLE_APIS += +evt.target.available_api_embedding.checked;
+        AVAILABLE_APIS += +evt.target.available_api_embedding_index.checked;
+        AVAILABLE_APIS += +evt.target.available_api_embedding_dataset.checked;
         AVAILABLE_APIS += '.';
         AVAILABLE_APIS += +evt.target.available_api_version.checked;
     }
@@ -349,6 +350,14 @@ window.onload = load;
                     <div class="title">Enable Embedding API</div>
                     <input type="checkbox" name="available_api_embedding">
                 </div>
+                    <div class="one-line api sub-api">
+                        <div class="title">Enable Calculate Embeddings</div>
+                        <input type="checkbox" name="available_api_embedding_index">
+                    </div>
+                    <div class="one-line api sub-api">
+                        <div class="title">Enable Dataset Upload</div>
+                        <input type="checkbox" name="available_api_embedding_dataset">
+                    </div>
                 <div class="one-line api api-index">
                     <div class="title">Enable Version API</div>
                     <input type="checkbox" name="available_api_version">

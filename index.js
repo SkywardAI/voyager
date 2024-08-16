@@ -37,7 +37,8 @@ decodeEnabledAPIs();
 const force_load = false;
 await initDB(force_load)
 if(+process.env.LOAD_DEFAULT_DATASET) {
-    await (await loadDataset(process.env.DEFAULT_DATASET_NAME || "production_dataset", force_load))(await loadDefaultDataset())
+    const loader = await loadDataset(process.env.DEFAULT_DATASET_NAME || "production_dataset", force_load)
+    loader && await loader(await loadDefaultDataset())
 }
 
 const app = express();

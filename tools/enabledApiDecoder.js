@@ -27,7 +27,8 @@ const allow_paths = {
         allowed: false
     },
     embedding: {
-        allowed: false
+        index: false,
+        dataset: false
     },
     version: {
         allowed: false

@@ -1,5 +1,5 @@
 # VOYAGER
-This project is OpenAI-like API set for SkywardAI project.
+The project is OpenAI-like API service of SkywardAI ecosystem.
 
 [![Linter and Builder 🚀](https://github.com/SkywardAI/voyager/actions/workflows/linter-builder-checker.yml/badge.svg)](https://github.com/SkywardAI/voyager/actions/workflows/linter-builder-checker.yml)
 [![Release Drafter 🚀](https://github.com/SkywardAI/voyager/actions/workflows/release-drafter.yml/badge.svg)](https://github.com/SkywardAI/voyager/actions/workflows/release-drafter.yml) 
@@ -49,6 +49,18 @@ make dev
 # this will do the same thing as `make up` but allows you to make changes and sync with container
 ```
 **NOTE:** `make dev` Requires Node.js environment installed, or at least have `node_modules` specified in `package.json` installed on your server. Please see [Local Machine](#local-machine) section.
+
+### Setup in your server
+1. Download this repo into your host machine.
+2. Open [generate_production_env.html](./generate_production_env.html) in your browser and
+    * Set fields you want to make change according to instructions
+    * Click `Generate Env File` button on the bottom
+    * Rename the downloaded file to `.env.production` and copy-paste it into root folder of this project
+3. Make sure you installed `docker` and `make` in your host machine.
+4. Run command `make up` to build & run, find this app on your host machine's port `8000`.
+
+
+**Hint**: Check [docker-compose.yaml](./docker-compose.yaml), [Makefile](./Makefile) and [plugin.js](./tools/plugin.js) to make it fits your own preference.
 
 ## Lint
 To start lint your code, simply run

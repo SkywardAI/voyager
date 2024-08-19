@@ -17,9 +17,9 @@ import { API_KEY_TABLE } from "../database/types.js";
 import { getTable } from "../database/index.js";
 
 const MAX_USAGE = 10;
-const tbl = await getTable(API_KEY_TABLE);
 
-function queryApiKeyTbl(key) {
+async function queryApiKeyTbl(key, table = null) {
+    const tbl = table || await getTable(API_KEY_TABLE);
     const keyQuery = tbl.query()
         .where('api_key = '+"'"+key+"'")
         .limit(1)
@@ -28,7 +28,8 @@ function queryApiKeyTbl(key) {
 }
 
 export async function addKeytoTable(key){
-    const keyQuery = await queryApiKeyTbl(key);
+    const tbl = await getTable(API_KEY_TABLE);
+    const keyQuery = await queryApiKeyTbl(key, tbl);
     if ( keyQuery.length == 0){
         await tbl.add([{api_key: key, usage: MAX_USAGE}]);
     }
@@ -38,7 +39,8 @@ export async function addKeytoTable(key){
 }
 
 export async function updateKeyUsage(key){
-    const keyQuery = await queryApiKeyTbl(key);
+    const tbl = await getTable(API_KEY_TABLE);
+    const keyQuery = await queryApiKeyTbl(key, tbl);
     console.log(keyQuery)
     if (keyQuery.length > 0){
         let usage = keyQuery[0].usage

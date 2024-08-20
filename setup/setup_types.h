@@ -539,6 +539,7 @@
 "    build:\n"\
 "      dockerfile: setup/Dockerfile\n"\
 "      context: .\n"\
+"%s"\
 "%s%s%s"\
 "    expose:\n"\
 "      - ${APP_EXPOSE_PORT}\n"\
@@ -550,10 +551,14 @@
 
 #define COMPOSE_FILE_VOLUME_SECTION "    volumes:\n"
 #define COMPOSE_FILE_DEV_MODE "      - .:/app\n"
+#define COMPOSE_FILE_STATIC_API_KEY \
+"    environment:\n"\
+"      - STATIC_API_KEY=%s\n"
 #define COMPOSE_FILE_SSL_INFO \
 "      - %s/%s:%s/%s\n"\
 "      - %s/%s:%s/%s\n"\
 "      - %s/%s:%s/%s\n"
+
 
 #define ENV_FILE \
 "APP_PORT=8000\n"\
@@ -571,6 +576,19 @@
 "NUM_THREAD_COUNTS_EMBEDDING=%.2f\n"\
 "LANGUAGE_MODEL_NAME=%s\n"\
 "EMBEDDING_MODEL_NAME=all-MiniLM-L6-v2-Q4_K_M-v2.gguf\n"\
+
+#define ENV_PRODUCTION_FILE \
+"ALLOW_ORIGIN=\"%s\"\n"\
+"STATIC_API_KEY_ENABLED=%d\n"\
+"ENABLE_HTTPS=%d\n"\
+"ENABLE_PLUGIN=%d\n"\
+"HTTPS_KEY_PATH=\"%s/%s\"\n"\
+"HTTPS_CERT_PATH=\"%s/%s\"\n"\
+"HTTPS_CA_PATH=\"%s/%s\"\n"\
+"SYSTEM_INSTRUCTION=\"%s\"\n"\
+"AVAILABLE_APIS=\"%s\""
+
+#define AVAILABLE_APIS_FORMAT "%d%d%d.%d%d.%d.%d%d.%d"
 
 #define DOCKERFILE  \
 "FROM node:20.15.1-slim\n"\

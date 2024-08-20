@@ -3,7 +3,7 @@ services:
     container_name: ${INFERENCE_ENG}
     image: gclub/llama.cpp:${INFERENCE_ENG_VERSION}
     restart: always
-    deploy: # https://github.com/compose-spec/compose-spec/blob/master/deploy.md
+    deploy:
       resources:
         reservations:
           cpus: "${NUM_CPU_CORES}"
@@ -19,7 +19,7 @@ services:
     container_name: ${EMBEDDING_ENG}
     image: gclub/llama.cpp:${INFERENCE_ENG_VERSION}
     restart: always
-    deploy: # https://github.com/compose-spec/compose-spec/blob/master/deploy.md
+    deploy:
       resources:
         reservations:
           cpus: "${NUM_CPU_CORES_EMBEDDING}"

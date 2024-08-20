@@ -600,6 +600,50 @@ void saveSettings(int show_message) {
     );
     fclose(f);
 
+    // ENV PRODUCTION
+    int all_apis_available = 
+        api_index_doc_enabled &&
+        api_index_stats_enabled &&
+        api_index_healthy_enabled &&
+        api_inference_comp_enabled &&
+        api_inference_rag_enabled &&
+        api_token_enabled &&
+        api_embedding_calc_enabled &&
+        api_embedding_ds_enabled &&
+        api_version_enabled;
+    char* api_enabled_str;
+    if(all_apis_available) {
+        api_enabled_str = "ALL";
+    } else {
+        asprintf(&api_enabled_str, AVAILABLE_APIS_FORMAT,
+            api_index_doc_enabled,
+            api_index_stats_enabled,
+            api_index_healthy_enabled,
+            api_inference_comp_enabled,
+            api_inference_rag_enabled,
+            api_token_enabled,
+            api_embedding_calc_enabled,
+            api_embedding_ds_enabled,
+            api_version_enabled
+        );
+    }
+
+    f = fopen(".env.production", "w");
+    fprintf(f, ENV_PRODUCTION_FILE,
+        allow_origin_name,
+        static_api_key_enabled,
+        https_enabled,
+        plugin_enabled,
+        https_cert_path_container, https_privkey_name,
+        https_cert_path_container, https_cert_name,
+        https_cert_path_container, https_ca_name,
+        system_instruction,
+        api_enabled_str
+    );
+    fclose(f);
+
+    if(!all_apis_available) free(api_enabled_str);
+
     // DOCKER-COMPOSE
     f = fopen("docker-compose-adv.yaml", "w");
     // check if should bind secret volume to host machine
@@ -618,14 +662,23 @@ void saveSettings(int show_message) {
     }
     // check if should bind any volume to host machine
     int volume_bind_check = dev_mode_enabled || secret_bind_check;
+
+    int static_api_key_availibility = 
+        static_api_key_enabled && 
+        strcmp(static_api_key_value, "*") != 0;
+
+    char* static_api_key_str;
+    if(static_api_key_availibility) asprintf(&static_api_key_str, COMPOSE_FILE_STATIC_API_KEY, static_api_key_value);
     
     fprintf(f, DOCKER_COMPOSE_FILE, 
+        static_api_key_availibility ? static_api_key_str : "",
         volume_bind_check ? COMPOSE_FILE_VOLUME_SECTION : "",
         dev_mode_enabled ? COMPOSE_FILE_DEV_MODE : "",
         secret_bind_check ? docker_compose_ssl_str : ""
     );
 
     if(secret_bind_check) free(docker_compose_ssl_str);
+    if(static_api_key_availibility) free(static_api_key_str);
     fclose(f);
 
     // DOCKERFILE

@@ -13,3 +13,5 @@ LICENSE
 volumes
 docker-compose*
 Makefile
+setup
+generate_production_env.html

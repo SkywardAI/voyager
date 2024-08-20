@@ -13,6 +13,18 @@ The project is OpenAI-like API service of SkywardAI ecosystem.
 https://github.com/user-attachments/assets/2b8f1ea7-0aca-44ea-b218-eff8e1769729
 
 
+### CLI 💥
+Introducing our new CLI tool!  
+> Make sure you can normally run `make`, `docker compose`, `gcc`, `sh` in your host machine.  
+
+Simply run `make setup` in the root folder to compile & run the CLI tool.  
+  
+Don't want to set? Directly go to `Save & Build` menu in it and use `Build and start the server` option to load the app in default settings.  
+  
+No gcc compiler? You can choose to compile the file `/setup/setup.c` yourself.
+  
+Explore it yourself to find more settings!
+
 
 ### Local Machine
 * Please make sure you installed `Node.js` on your local machine.  

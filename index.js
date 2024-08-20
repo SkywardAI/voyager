@@ -64,14 +64,14 @@ if(isRouteEnabled("index", "docs")) {
 const PORT = process.env.PORT || 8000
 if(
     +process.env.ENABLE_HTTPS &&
-    process.env.HTTPS_KEY_PATH !== "*" &&
-    process.env.HTTPS_CERT_PATH !== '*'
+    !process.env.HTTPS_KEY_PATH.startsWith("*") &&
+    !process.env.HTTPS_CERT_PATH.startsWith("*")
 ) {
     const ssl_options = {
         key: readFileSync(process.env.HTTPS_KEY_PATH),
         cert: readFileSync(process.env.HTTPS_CERT_PATH)
     }
-    if(process.env.HTTPS_CA_PATH && process.env.HTTPS_CA_PATH !== '*') {
+    if(process.env.HTTPS_CA_PATH && !process.env.HTTPS_CA_PATH.startsWith("*")) {
         ssl_options.ca = readFileSync(process.env.HTTPS_CA_PATH);
     }
     createServer(ssl_options, app).listen(PORT, '0.0.0.0', () => {

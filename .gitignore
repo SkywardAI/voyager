@@ -2,3 +2,4 @@ node_modules
 .git
 volumes
 __pycache__
+setup/setup

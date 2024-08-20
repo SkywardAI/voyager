@@ -1,0 +1,46 @@
+services:
+  llamacpp:
+    container_name: ${INFERENCE_ENG}
+    image: gclub/llama.cpp:${INFERENCE_ENG_VERSION}
+    restart: always
+    deploy: # https://github.com/compose-spec/compose-spec/blob/master/deploy.md
+      resources:
+        reservations:
+          cpus: "${NUM_CPU_CORES}"
+    volumes:
+      - "${DOCKER_VOLUME_DIRECTORY:-.}/${MODEL_SAVE_PATH}:/models"
+    expose:
+      - ${ENG_ACCESS_PORT}
+    ports:
+      - ${INFERENCE_ENG_PORT}:${ENG_ACCESS_PORT}
+    command: ["-m", "models/${LANGUAGE_MODEL_NAME}","-t","${NUM_THREADS_COUNT}","-c","8192"]
+
+  embedding_eng:
+    container_name: ${EMBEDDING_ENG}
+    image: gclub/llama.cpp:${INFERENCE_ENG_VERSION}
+    restart: always
+    deploy: # https://github.com/compose-spec/compose-spec/blob/master/deploy.md
+      resources:
+        reservations:
+          cpus: "${NUM_CPU_CORES_EMBEDDING}"
+    volumes:
+      - "${DOCKER_VOLUME_DIRECTORY:-.}/${MODEL_SAVE_PATH}:/models"
+    expose:
+      - ${ENG_ACCESS_PORT}
+    ports:
+      - ${EMBEDDING_ENG_PORT}:${ENG_ACCESS_PORT}
+    command: ["-m", "models/${EMBEDDING_MODEL_NAME}","--embeddings","--pooling","mean","-t","${NUM_THREAD_COUNTS_EMBEDDING}","-c","512"]
+
+  voyager:
+    container_name: voyager
+    restart: always
+    build:
+      dockerfile: setup/Dockerfile
+      context: .
+    expose:
+      - ${APP_EXPOSE_PORT}
+    ports:
+      - ${APP_EXPOSE_PORT}:${APP_PORT}
+    depends_on:
+      - llamacpp
+      - embedding_eng

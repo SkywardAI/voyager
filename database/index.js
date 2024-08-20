@@ -42,7 +42,7 @@ export async function initDB(force = false) {
     // create or re-open api key table
     await db.createEmptyTable(API_KEY_TABLE, new Schema([
         new Field("api_key", new Utf8()),
-        new Field("usage", new Int32()),
+        new Field("usage", new Int32())
     ]), open_options);
 }
 

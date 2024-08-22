@@ -83,6 +83,13 @@ class TestAllAPIs(unittest.TestCase):
         res=requests.post(url=self.base_url+"/v1/chat/completions", json=data,headers={"Content-Type": "application/json", "Authorization":"Bearer no-key"},)
         self.assertEqual(res.status_code, 200)
 
+    def test_embedding_api(self):
+        data = {
+                "input": "Hello, world!",
+                "model": "all-MiniLM-L6-v2"
+            }
+        res = requests.post(url=self.base_url+"/v1/embeddings", json=data, headers={"Content-Type": "application/json", "Authorization":"Bearer no-key"})
+        self.assertEqual(res.status_code, 200)
 
     def test_api_key(self):
         res=requests.get(url=self.base_url+"/v1/token/api-key")

@@ -23,6 +23,7 @@ import embeddingRoute from "./embedding.js";
 // import decoderRoute from "./decoder.js";
 import versionRoute from "./version.js";
 import { isRouteEnabled } from "../tools/enabledApiDecoder.js";
+import { generateScript } from "../tools/web_embed.js";
 
 function indexRoute() {
     const router = Router();
@@ -30,6 +31,13 @@ function indexRoute() {
     if(isRouteEnabled("index", "healthy")) {
         router.get('/healthy', (_, res)=>{
             res.status(200).send('ok')
+        })
+    }
+
+    if(isRouteEnabled("index", "chatbox")) {
+        router.get('/chatbox', (req, res)=>{
+            res.setHeader("Content-Type", "application/json; charset=utf-8")
+            res.send(generateScript(req.query.base_url));
         })
     }
 

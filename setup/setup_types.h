@@ -392,23 +392,26 @@
 #define API_INDEX_HEALTHY \
     "c. %s Healthy..............(/healthy)\n"
 
+#define API_INDEX_CHATBOX \
+    "d. %s Chatbox Embed........(/chatbox)\n"
+
 #define API_INFERENCE_COMP \
-    "d. %s Inference............(/v1/chat/completions)\n"
+    "e. %s Inference............(/v1/chat/completions)\n"
 
 #define API_INFERENCE_RAG \
-    "e. %s RAG Inference........(/v1/chat/rag-completions)\n"
+    "f. %s RAG Inference........(/v1/chat/rag-completions)\n"
 
 #define API_TOKEN \
-    "f. %s API Key..............(/v1/token/api-key)\n"
+    "g. %s API Key..............(/v1/token/api-key)\n"
 
 #define API_EMBEDDING_CALC \
-    "g. %s Calcualte Embedding..(/v1/embeddings)\n"
+    "h. %s Calcualte Embedding..(/v1/embeddings)\n"
 
 #define API_EMBEDDING_DS \
-    "h. %s Upload Dataset.......(/v1/embeddings/dataset)\n"
+    "i. %s Upload Dataset.......(/v1/embeddings/dataset)\n"
 
 #define API_VERSION \
-    "i. %s Version..............(/v1/version)\n"
+    "j. %s Version..............(/v1/version)\n"
 
 #define API_MENU_END \
     "y. Enable All\n"\
@@ -488,6 +491,7 @@
 "#define API_INDEX_DOC_ENABLED %d\n"\
 "#define API_INDEX_STATS_ENABLED %d\n"\
 "#define API_INDEX_HEALTHY_ENABLED %d\n"\
+"#define API_INDEX_CHATBOX_ENABLED %d\n"\
 "#define API_INFERENCE_COMP_ENABLED %d\n"\
 "#define API_INFERENCE_RAG_ENABLED %d\n"\
 "#define API_TOKEN_ENABLED %d\n"\
@@ -588,7 +592,7 @@
 "SYSTEM_INSTRUCTION=\"%s\"\n"\
 "AVAILABLE_APIS=\"%s\""
 
-#define AVAILABLE_APIS_FORMAT "%d%d%d.%d%d.%d.%d%d.%d"
+#define AVAILABLE_APIS_FORMAT "%d%d%d%d.%d%d.%d.%d%d.%d"
 
 #define DOCKERFILE  \
 "FROM node:20.15.1-slim\n"\

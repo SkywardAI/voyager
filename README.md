@@ -62,17 +62,23 @@ make dev
 ```
 **NOTE:** `make dev` Requires Node.js environment installed, or at least have `node_modules` specified in `package.json` installed on your server. Please see [Local Machine](#local-machine) section.
 
-### Setup in your server
-1. Download this repo into your host machine.
-2. Open [generate_production_env.html](./generate_production_env.html) in your browser and
-    * Set fields you want to make change according to instructions
-    * Click `Generate Env File` button on the bottom
-    * Rename the downloaded file to `.env.production` and copy-paste it into root folder of this project
-3. Make sure you installed `docker` and `make` in your host machine.
-4. Run command `make up` to build & run, find this app on your host machine's port `8000`.
-
-
-**Hint**: Check [docker-compose.yaml](./docker-compose.yaml), [Makefile](./Makefile) and [plugin.js](./tools/plugin.js) to make it fits your own preference.
+## Embed your chatbot into website
+To embed a chatbot to your website, simply add  
+```html
+<script src='http://localhost:8000/chatbox?base_url=http%3A%2F%2Flocalhost%3A8000' defer></script>
+```
+into the bottom of your html body element. So easy!  
+Please change the `http://localhost:8000` and the base_url in request query to your real host to make sure it works.  
+  
+If you want to hide the real link, in your javascript code you can do  
+```js
+const chatbox_script = await (await fetch("http://localhost:8000/chatbox?base_url=http%3A%2F%2Flocalhost%3A8000")).blob();
+const chatbox_url = URL.createObjectURL(chatbox_script);
+const script_elem = document.createElement('script');
+script_elem.src = chatbox_url;
+document.body.append(script_elem);
+```
+And remember to use `URL.revokeObjectURL(chatbox_url)` if you don't need it anymore.
 
 ## Lint
 To start lint your code, simply run

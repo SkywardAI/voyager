@@ -7,11 +7,9 @@ The project is OpenAI-like API service of SkywardAI ecosystem.
 
 ## BUILD & RUN
 
-### Setting Up Video
+### Setup and API usage demo video
 
-
-https://github.com/user-attachments/assets/2b8f1ea7-0aca-44ea-b218-eff8e1769729
-
+https://github.com/user-attachments/assets/fa7059c2-309e-486a-a28a-45867613c84b
 
 ### CLI 💥
 Introducing our new CLI tool!  

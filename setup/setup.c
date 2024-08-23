@@ -31,6 +31,7 @@ char* default_dataset_name = DEFAULT_DATASET_NAME;
 int api_index_doc_enabled = API_INDEX_DOC_ENABLED;
 int api_index_stats_enabled = API_INDEX_STATS_ENABLED;
 int api_index_healthy_enabled = API_INDEX_HEALTHY_ENABLED;
+int api_index_chatbox_enabled = API_INDEX_CHATBOX_ENABLED;
 int api_inference_comp_enabled = API_INFERENCE_COMP_ENABLED;
 int api_inference_rag_enabled = API_INFERENCE_RAG_ENABLED;
 int api_token_enabled = API_TOKEN_ENABLED;
@@ -465,6 +466,7 @@ void logAPIMenu() {
     printf(API_INDEX_DOC, api_index_doc_enabled?ENABLED:DISABLED);
     printf(API_INDEX_STATS, api_index_stats_enabled?ENABLED:DISABLED);
     printf(API_INDEX_HEALTHY, api_index_healthy_enabled?ENABLED:DISABLED);
+    printf(API_INDEX_CHATBOX, api_index_chatbox_enabled?ENABLED:DISABLED);
     printf(API_INFERENCE_COMP, api_inference_comp_enabled?ENABLED:DISABLED);
     printf(API_INFERENCE_RAG, api_inference_rag_enabled?ENABLED:DISABLED);
     printf(API_TOKEN, api_token_enabled?ENABLED:DISABLED);
@@ -484,16 +486,18 @@ void apiSettings() {
             case 'c': case 'C':
                 api_index_healthy_enabled = !api_index_healthy_enabled; break;
             case 'd': case 'D':
-                api_inference_comp_enabled = !api_inference_comp_enabled; break;
+                api_index_chatbox_enabled = !api_index_chatbox_enabled; break;
             case 'e': case 'E':
-                api_inference_rag_enabled = !api_inference_rag_enabled; break;
+                api_inference_comp_enabled = !api_inference_comp_enabled; break;
             case 'f': case 'F':
-                api_token_enabled = !api_token_enabled; break;
+                api_inference_rag_enabled = !api_inference_rag_enabled; break;
             case 'g': case 'G':
-                api_embedding_calc_enabled = !api_embedding_calc_enabled; break;
+                api_token_enabled = !api_token_enabled; break;
             case 'h': case 'H':
-                api_embedding_ds_enabled = !api_embedding_ds_enabled; break;
+                api_embedding_calc_enabled = !api_embedding_calc_enabled; break;
             case 'i': case 'I':
+                api_embedding_ds_enabled = !api_embedding_ds_enabled; break;
+            case 'j': case 'J':
                 api_version_enabled = !api_version_enabled; break;
             case 'q': case 'Q': case ESC:
                 return;
@@ -501,6 +505,7 @@ void apiSettings() {
                 api_index_doc_enabled = 1;
                 api_index_stats_enabled = 1;
                 api_index_healthy_enabled = 1;
+                api_index_chatbox_enabled = 1;
                 api_inference_comp_enabled = 1;
                 api_inference_rag_enabled = 1;
                 api_token_enabled = 1;
@@ -512,6 +517,7 @@ void apiSettings() {
                 api_index_doc_enabled = 0;
                 api_index_stats_enabled = 0;
                 api_index_healthy_enabled = 0;
+                api_index_chatbox_enabled = 0;
                 api_inference_comp_enabled = 0;
                 api_inference_rag_enabled = 0;
                 api_token_enabled = 0;
@@ -578,6 +584,7 @@ void saveSettings(int show_message) {
         api_index_doc_enabled,
         api_index_stats_enabled,
         api_index_healthy_enabled,
+        api_index_chatbox_enabled,
         api_inference_comp_enabled,
         api_inference_rag_enabled,
         api_token_enabled,
@@ -605,6 +612,7 @@ void saveSettings(int show_message) {
         api_index_doc_enabled &&
         api_index_stats_enabled &&
         api_index_healthy_enabled &&
+        api_index_chatbox_enabled &&
         api_inference_comp_enabled &&
         api_inference_rag_enabled &&
         api_token_enabled &&
@@ -619,6 +627,7 @@ void saveSettings(int show_message) {
             api_index_doc_enabled,
             api_index_stats_enabled,
             api_index_healthy_enabled,
+            api_index_chatbox_enabled,
             api_inference_comp_enabled,
             api_inference_rag_enabled,
             api_token_enabled,
@@ -736,6 +745,7 @@ void saveDefaultSettings() {
     api_index_doc_enabled = DEFAULT_API_INDEX_DOC_ENABLED;
     api_index_stats_enabled = DEFAULT_API_INDEX_STATS_ENABLED;
     api_index_healthy_enabled = DEFAULT_API_INDEX_HEALTHY_ENABLED;
+    api_index_chatbox_enabled = DEFAULT_API_INDEX_CHATBOX_ENABLED;
     api_inference_comp_enabled = DEFAULT_API_INFERENCE_COMP_ENABLED;
     api_inference_rag_enabled = DEFAULT_API_INFERENCE_RAG_ENABLED;
     api_token_enabled = DEFAULT_API_TOKEN_ENABLED;

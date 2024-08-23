@@ -17,7 +17,8 @@ const allow_paths = {
     index: {
         docs: false,
         stats: false,
-        healthy: false
+        healthy: false,
+        chatbox: false
     },
     inference: {
         completions: false,
@@ -71,7 +72,7 @@ export function decodeEnabledAPIs() {
 /**
  * check if provided route enabled
  * @param {"index"|"inference"|"embedding"|"version"|"token"} index_path_name name of route index
- * @param {"docs"|"stats"|"healthy"|"completions"|"rag"} api_name name of specific api
+ * @param {"docs"|"stats"|"healthy"|"chatbox"|"completions"|"rag"|"calculate"|"dataset"} api_name name of specific api
  * @returns {Boolean}
  */
 export function isRouteEnabled(index_path_name, api_name = null) {

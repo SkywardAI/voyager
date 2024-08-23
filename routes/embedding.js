@@ -20,7 +20,7 @@ import { isRouteEnabled } from "../tools/enabledApiDecoder.js";
 export default function embeddingRoute() {
     const router = Router();
 
-    isRouteEnabled("embedding", "index") && router.post("/", embeddings);
+    isRouteEnabled("embedding", "calculate") && router.post("/", embeddings);
     isRouteEnabled("embedding", "dataset") && router.post("/dataset", uploadDataset);
 
     return router;

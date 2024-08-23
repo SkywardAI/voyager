@@ -33,6 +33,12 @@ function indexRoute() {
         })
     }
 
+    if(isRouteEnabled("index", "chatbox")) {
+        router.get('/chatbox', (_, res)=>{
+            res.sendFile('/app/tools/web_embed.js')
+        })
+    }
+
     return router;
 }
 

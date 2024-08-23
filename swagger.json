@@ -87,6 +87,29 @@
         }
       }
     },
+    "/chatbox": {
+      "get": {
+        "tags": ["Index"],
+        "summary" : "Route to embed chatbot",
+        "description": "Please see this [README](https://github.com/SkywardAI/voyager?tab=readme-ov-file#embed-your-chatbot-into-website).",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "base_url",
+            "type": "string",
+            "description": "The base url of request, usually the url of this page you are looking at. Default http://localhost:8000."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the load script, usually load with script tag in HTML",
+            "content":{
+              "application/json; charset=utf-8": {}
+            }
+          }
+        }
+      }
+    },
     "/v1/chat/completions": {
       "post": {
         "tags": [

@@ -222,10 +222,12 @@ export async function ragChatCompletion(req, res) {
     const latest_message = messages.slice(-1)[0].content;
     const rag_result = await searchByMessage(dataset_name, latest_message);
 
-    request_body.prompt = formatOpenAIContext([
-        ...messages, 
-        { role: "system", content: `This background information is useful for your next answer: "${rag_result.context}"` }
-    ])
+    const context = [...messages];
+    if(rag_result) context.push({ 
+        role: "system", 
+        content: `This background information is useful for your next answer: "${rag_result.context}"` 
+    })
+    request_body.prompt = formatOpenAIContext(context);
 
     const isStream = !!request_body.stream;
     if(isStream) {

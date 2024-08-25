@@ -164,7 +164,7 @@ export async function chatCompletion(req, res) {
                 request_body.prompt = formatOpenAIContext(value);
                 break;
             case "system_instruction":
-                messages.push(value);
+                messages.push({role:"system", content: value});
                 break;
             case "normal": default:
                 break;

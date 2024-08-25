@@ -641,12 +641,14 @@ void saveSettings(int show_message) {
     fprintf(f, ENV_PRODUCTION_FILE,
         allow_origin_name,
         static_api_key_enabled,
-        https_enabled,
         plugin_enabled,
+        https_enabled,
         https_cert_path_container, https_privkey_name,
         https_cert_path_container, https_cert_name,
         https_cert_path_container, https_ca_name,
         system_instruction,
+        default_dataset_enabled,
+        default_dataset_name,
         api_enabled_str
     );
     fclose(f);

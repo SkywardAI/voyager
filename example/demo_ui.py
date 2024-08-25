@@ -28,7 +28,7 @@ st.set_page_config(
     layout="wide")
 
 # Create a header element
-mytitle = '# Customary Medicinal Flora of Australia: Chatbot 🌟'
+mytitle = '# Local AI Solutions and LLM-based Chatbot development 🌟'
 st.markdown(mytitle, unsafe_allow_html=True)
 st.markdown('### Conversation tokens context window')
 # function to generate random alphanumeric sequence for the filename

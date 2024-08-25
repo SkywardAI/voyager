@@ -584,12 +584,14 @@
 #define ENV_PRODUCTION_FILE \
 "ALLOW_ORIGIN=\"%s\"\n"\
 "STATIC_API_KEY_ENABLED=%d\n"\
-"ENABLE_HTTPS=%d\n"\
 "ENABLE_PLUGIN=%d\n"\
+"ENABLE_HTTPS=%d\n"\
 "HTTPS_KEY_PATH=\"%s/%s\"\n"\
 "HTTPS_CERT_PATH=\"%s/%s\"\n"\
 "HTTPS_CA_PATH=\"%s/%s\"\n"\
 "SYSTEM_INSTRUCTION=\"%s\"\n"\
+"LOAD_DEFAULT_DATASET=%d\n"\
+"DEFAULT_DATASET_NAME=\"%s\"\n"\
 "AVAILABLE_APIS=\"%s\""
 
 #define AVAILABLE_APIS_FORMAT "%d%d%d%d.%d%d.%d.%d%d.%d"

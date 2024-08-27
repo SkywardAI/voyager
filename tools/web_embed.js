@@ -343,7 +343,8 @@ const styles = \`
                     value.split("\\n\\n").forEach(json_str => {
                         if(json_str) {
                             const { choices } = JSON.parse(json_str);
-                            const content = choices[0].delta.content
+                            let content = choices[0].delta.content
+                            content = content.replaceAll("  ", "\\xa0\\xa0");
                             response += content;
                             if(content.includes("\\n")) {
                                 const content_parts = content.split("\\n")

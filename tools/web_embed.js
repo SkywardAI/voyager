@@ -2,7 +2,7 @@
  * Generates the script with base_url, to simply embed a chatbot in web page
  * @param {String} base_url The url to send request, default `http://localhost:8000`
  */
-export function generateScript(base_url = 'http://localhost:8000') {
+export function generateScript(base_url = 'http://localhost:8000', max_tokens = 128) {
     return `
 (function() {
     'use strict';
@@ -291,7 +291,9 @@ const styles = \`
     function createElement(tagName, className, textContent) {
         const elem = document.createElement(tagName);
         elem.className = className;
-        elem.textContent = textContent;
+        textContent.split("\\n").forEach(content=>{
+            elem.append(content, document.createElement("br"))
+        })
         return elem;
     }
     
@@ -313,7 +315,8 @@ const styles = \`
                     {role: 'system', content: "You are a helpful assistant solves problem"},
                     {role: 'user', content: message}
                 ],
-                stream: true
+                stream: true,
+                max_tokens: ${max_tokens}
             })
         });
         if(resp.ok) {
@@ -328,7 +331,16 @@ const styles = \`
                             const { choices } = JSON.parse(json_str);
                             const content = choices[0].delta.content
                             response += content;
-                            pending_conversation.textContent = response;
+                            if(content.includes("\\n")) {
+                                const content_parts = content.split("\\n")
+                                const arr_len = content_parts.length - 1;
+                                for(let i = 0; i < content_parts.length; i++) {
+                                    pending_conversation.append(content_parts[i])
+                                    if(i < arr_len) {
+                                        pending_conversation.append(document.createElement("br"));
+                                    }
+                                }
+                            } else pending_conversation.append(content);
                             conversation_main.scrollTo({
                                 behavior: "smooth", 
                                 top: conversation_main.scrollHeight

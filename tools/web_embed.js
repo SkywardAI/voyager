@@ -2,7 +2,7 @@
  * Generates the script with base_url, to simply embed a chatbot in web page
  * @param {String} base_url The url to send request, default `http://localhost:8000`
  */
-export function generateScript(base_url = 'http://localhost:8000') {
+export function generateScript(base_url = 'http://localhost:8000', max_tokens = 128) {
     return `
 (function() {
     'use strict';
@@ -105,6 +105,7 @@ const styles = \`
     border-radius: 20px;
     border: 1px solid gray;
     padding: 0px 40px 0px 10px;
+    box-sizing: border-box;
 }
 
 
@@ -176,6 +177,7 @@ const styles = \`
     top: 40px;
     display: block;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 20px;
     box-sizing: border-box;
 }
@@ -188,6 +190,12 @@ const styles = \`
     text-align: center;
     text-decoration: none;
     display: block;
+    transition-duration: .3s;
+}
+
+.chatbox > .expanded-page > .conversations > .power-by:hover {
+    transform: scale(1.2);
+    font-weight: bold;
 }
 
 .chatbox > .expanded-page > .conversations > .bubble {
@@ -199,6 +207,8 @@ const styles = \`
     margin: auto;
     font-size: 17px;
     margin-bottom: 10px;
+    word-wrap: break-word;
+    max-width: calc(100% - 40px);
 }
 
 .chatbox > .expanded-page > .conversations > .bubble.empty {
@@ -291,7 +301,9 @@ const styles = \`
     function createElement(tagName, className, textContent) {
         const elem = document.createElement(tagName);
         elem.className = className;
-        elem.textContent = textContent;
+        textContent.split("\\n").forEach(content=>{
+            elem.append(content, document.createElement("br"))
+        })
         return elem;
     }
     
@@ -313,22 +325,37 @@ const styles = \`
                     {role: 'system', content: "You are a helpful assistant solves problem"},
                     {role: 'user', content: message}
                 ],
-                stream: true
+                stream: true,
+                max_tokens: ${max_tokens}
             })
         });
         if(resp.ok) {
             const reader = resp.body.pipeThrough(new TextDecoderStream()).getReader();
-            let response = ''
+            let response = '', started = false;
             while(true) {
                 const { value, done } = await reader.read();
+                if(!started) {
+                    started = true;
+                    pending_conversation.textContent = '';
+                }
                 if(done) break;
                 try {
                     value.split("\\n\\n").forEach(json_str => {
                         if(json_str) {
                             const { choices } = JSON.parse(json_str);
-                            const content = choices[0].delta.content
+                            let content = choices[0].delta.content
+                            content = content.replaceAll("  ", "\\xa0\\xa0");
                             response += content;
-                            pending_conversation.textContent = response;
+                            if(content.includes("\\n")) {
+                                const content_parts = content.split("\\n")
+                                const arr_len = content_parts.length - 1;
+                                for(let i = 0; i < content_parts.length; i++) {
+                                    pending_conversation.append(content_parts[i])
+                                    if(i < arr_len) {
+                                        pending_conversation.append(document.createElement("br"));
+                                    }
+                                }
+                            } else pending_conversation.append(content);
                             conversation_main.scrollTo({
                                 behavior: "smooth", 
                                 top: conversation_main.scrollHeight

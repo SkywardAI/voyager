@@ -78,14 +78,14 @@ with st.sidebar:
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "system", "content": "You are assistant, a helpful assistant. You reply only to the user questions. You always reply in the language of the instructions.",},
-        {"role": "user", "content": "Hi, I am P000252SE."},
+        {"role": "user", "content": "Hi, I am P000455CSITCPL."},
         {"role": "assistant", "content": "Hi there, I am assistant, how may I help you today?"}
     ]
 # we define the function to clear from the screen the conversation history
 def clearHistory():
     st.session_state.messages = [
         {"role": "system", "content": "You are assistant, a helpful assistant. You reply only to the user questions. You always reply in the language of the instructions.",},
-        {"role": "user", "content": "Hi, I am P000252SE."},
+        {"role": "user", "content": "Hi, I am P000455CSITCPL."},
         {"role": "assistant", "content": "Hi there, I am assistant, how may I help you today?"}
     ]
 if btnClear:

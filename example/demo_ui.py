@@ -62,7 +62,7 @@ if "maxlength" not in st.session_state:
 
 # CREATE THE SIDEBAR
 with st.sidebar:
-    st.image('img/RMIT_POS3.png', use_column_width=True)
+    st.image('example/img/log.png', use_column_width=True)
     st.session_state.temperature = st.slider('Temperature:', min_value=0.0, max_value=1.0, value=0.1, step=0.02)
     st.session_state.maxlength = st.slider('Length reply:', min_value=150, max_value=1000, 
                                            value=500, step=50)

@@ -36,8 +36,9 @@ function indexRoute() {
 
     if(isRouteEnabled("index", "chatbox")) {
         router.get('/chatbox', (req, res)=>{
+            const { base_url, max_tokens } = req.query;
             res.setHeader("Content-Type", "application/json; charset=utf-8")
-            res.send(generateScript(req.query.base_url));
+            res.send(generateScript(base_url, max_tokens));
         })
     }
 

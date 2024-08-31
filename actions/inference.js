@@ -83,7 +83,12 @@ async function doInference(req_body, callback, isStream) {
             const { value, done } = await reader.read();
             if(done) break;
             const data = value.split("data: ").pop()
-            callback(JSON.parse(data));
+            try {
+                callback(JSON.parse(data));
+            } catch(error) {
+                console.log(error)
+                callback({content: "", stop: true})
+            }
         }
     } else {
         const eng_resp = await post('completion', { body: req_body });

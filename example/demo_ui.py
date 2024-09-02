@@ -62,7 +62,7 @@ if "maxlength" not in st.session_state:
 
 # CREATE THE SIDEBAR
 with st.sidebar:
-    st.image('img/RMIT_POS3.png', use_column_width=True)
+    st.image('example/img/project-group-name.png', use_column_width=True)
     st.session_state.temperature = st.slider('Temperature:', min_value=0.0, max_value=1.0, value=0.1, step=0.02)
     st.session_state.maxlength = st.slider('Length reply:', min_value=150, max_value=1000, 
                                            value=500, step=50)
@@ -78,14 +78,14 @@ with st.sidebar:
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "system", "content": "You are assistant, a helpful assistant. You reply only to the user questions. You always reply in the language of the instructions.",},
-        {"role": "user", "content": "Hi, I am P000252SE."},
+        {"role": "user", "content": "Hi, I am P000455CSITCPL."},
         {"role": "assistant", "content": "Hi there, I am assistant, how may I help you today?"}
     ]
 # we define the function to clear from the screen the conversation history
 def clearHistory():
     st.session_state.messages = [
         {"role": "system", "content": "You are assistant, a helpful assistant. You reply only to the user questions. You always reply in the language of the instructions.",},
-        {"role": "user", "content": "Hi, I am P000252SE."},
+        {"role": "user", "content": "Hi, I am P000455CSITCPL."},
         {"role": "assistant", "content": "Hi there, I am assistant, how may I help you today?"}
     ]
 if btnClear:

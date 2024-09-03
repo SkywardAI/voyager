@@ -37,6 +37,8 @@ services:
     build:
       dockerfile: setup/Dockerfile
       context: .
+    volumes:
+      - ${DATABASE_BIND_PATH}:/tmp/lancedb
     expose:
       - ${APP_EXPOSE_PORT}
     ports:

@@ -44,4 +44,6 @@
 
 #define DEV_MODE_ENABLED 0
 
+#define DATABASE_BIND_PATH "./lancedb"
+
 #endif

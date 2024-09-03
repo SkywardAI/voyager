@@ -82,6 +82,32 @@ class TestAllAPIs(unittest.TestCase):
         }
         res=requests.post(url=self.base_url+"/v1/chat/completions", json=data,headers={"Content-Type": "application/json", "Authorization":"Bearer no-key"},)
         self.assertEqual(res.status_code, 200)
+    
+    def test_rag_completion(self):
+        #Load the dataset
+        dataset = {
+                    "name": "aisuko/squad01-v2",
+                    "url": "https://datasets-server.huggingface.co/rows?dataset=aisuko%2Fsquad01-v2&config=default&split=validation&offset=0&length=100"
+                }
+        loadDataset = requests.post(url=self.base_url+"/v1/embeddings/dataset", json=dataset, headers={"Content-Type": "application/json", "Authorization":"Bearer no-key"})
+        self.assertEqual(loadDataset.status_code, 200)
+
+        #Test RAG completions
+        data = {
+                "messages": [
+                    {
+                    "role": "system",
+                    "content": "You are a helpful assistant who helps users solve their questions."
+                    },
+                    {
+                    "role": "user",
+                    "content": "tell me something interest about massachusetts"
+                    }
+                ],
+                "dataset_name": "aisuko/squad01-v2"
+            }
+        res = requests.post(url=self.base_url+"/v1/chat/rag-completions", json=data, headers={"Content-Type": "application/json", "Authorization":"Bearer no-key"})
+        self.assertEqual(res.status_code, 200)
 
     def test_embedding_api(self):
         data = {
@@ -101,4 +127,4 @@ class TestAllAPIs(unittest.TestCase):
         res = requests.get(url=self.base_url+"/v1/version")
         self.assertEqual(res.status_code, 200)
         data = res.json().get("inference_engine_version")
-        self.assertEqual('server--b1-2321a5e', data)
+        self.assertEqual('server--b1-27d4b7c', data)

@@ -3,3 +3,4 @@ node_modules
 volumes
 __pycache__
 setup/setup
+lancedb

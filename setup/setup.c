@@ -41,6 +41,8 @@ int api_version_enabled = API_VERSION_ENABLED;
 
 int dev_mode_enabled = DEV_MODE_ENABLED;
 
+char* database_bind_path = DATABASE_BIND_PATH;
+
 // ===============================FUNCTION DECLARATION===============================
 
 void logMenu(char*);
@@ -128,14 +130,21 @@ void handleMenuSelection() {
             defaultDatasetSettings();
             break;
         case 'h': case 'H':
-            staticAPIKeySettings();
+            setStringFields(
+                DATABSE_PATH_MENU, 
+                "Set Database Path Success", 
+                "Database path: ",
+                &database_bind_path
+            );
             break;
         case 'i': case 'I':
-            apiSettings();
+            staticAPIKeySettings();
             break;
         case 'j': case 'J':
-            setYesNoFields(DEV_MODE_MENU, &dev_mode_enabled); break;
+            apiSettings();
         case 'k': case 'K':
+            setYesNoFields(DEV_MODE_MENU, &dev_mode_enabled); break;
+        case 'l': case 'L':
             buildSettings(); break;
         case 'q': case 'Q': case ESC:
             puts("Exit.");
@@ -591,7 +600,8 @@ void saveSettings(int show_message) {
         api_embedding_calc_enabled,
         api_embedding_ds_enabled,
         api_version_enabled,
-        dev_mode_enabled
+        dev_mode_enabled,
+        database_bind_path
     );
     fclose(f);
 
@@ -599,6 +609,7 @@ void saveSettings(int show_message) {
     f = fopen(".env", "w");
     fprintf(f, ENV_FILE,
         app_expose_port,
+        database_bind_path,
         inference_cpu_cores,
         inference_thread_counts,
         embedding_cpu_cores,
@@ -671,8 +682,6 @@ void saveSettings(int show_message) {
             https_cert_path_host, https_ca_name, https_cert_path_container, https_ca_name
         );
     }
-    // check if should bind any volume to host machine
-    int volume_bind_check = dev_mode_enabled || secret_bind_check;
 
     int static_api_key_availibility = 
         static_api_key_enabled && 
@@ -683,7 +692,6 @@ void saveSettings(int show_message) {
     
     fprintf(f, DOCKER_COMPOSE_FILE, 
         static_api_key_availibility ? static_api_key_str : "",
-        volume_bind_check ? COMPOSE_FILE_VOLUME_SECTION : "",
         dev_mode_enabled ? COMPOSE_FILE_DEV_MODE : "",
         secret_bind_check ? docker_compose_ssl_str : ""
     );
@@ -755,5 +763,6 @@ void saveDefaultSettings() {
     api_embedding_ds_enabled = DEFAULT_API_EMBEDDING_DS_ENABLED;
     api_version_enabled = DEFAULT_API_VERSION_ENABLED;
     dev_mode_enabled = DEFAULT_DEV_MODE_ENABLED;
+    database_bind_path = DEFAULT_DATABASE_BIND_PATH;
     saveSettings(1);
 }

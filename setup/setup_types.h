@@ -34,10 +34,11 @@
     "e. Set Plugin Availability\n"\
     "f. Set System Instruction\n"\
     "g. Set Default Dataset Features\n"\
-    "h. Set Static API-Key Features\n"\
-    "i. Set APIs Availability\n"\
-    "j. Toggle Developer Mode\n"\
-    "k. Save & Build\n"\
+    "h. Set Database Path on Server\n"\
+    "i. Set Static API-Key Features\n"\
+    "j. Set APIs Availability\n"\
+    "k. Toggle Developer Mode\n"\
+    "l. Save & Build\n"\
     "q. Quit\n"\
     "\n"\
     "Please enter your selection: "
@@ -437,6 +438,18 @@
     "Enter 'q' to go back\n\n"\
     "Do you want to enable developer mode? (Y/N): "
 
+// ===============================DEV MODE===============================
+#define DATABSE_PATH_MENU \
+    "================================\n"\
+    "\n"\
+    "     Database Path on Server\n"\
+    "\n"\
+    "================================\n"\
+    "\n"\
+    "Please set your database path on server, so you won't lost your data when you restart your server.\n"\
+    "Enter 'q' to go back\n\n"\
+    "Path of database: "
+
 // ===============================CONFIGS===============================
 #define SAVE_CONFIG_SUCCESS "Successfully Saved Config"
 
@@ -501,6 +514,8 @@
 "\n"\
 "#define DEV_MODE_ENABLED %d\n"\
 "\n"\
+"#define DATABASE_BIND_PATH \"%s\"\n"\
+"\n"\
 "#endif"
 
 #define DOCKER_COMPOSE_FILE \
@@ -544,7 +559,9 @@
 "      dockerfile: setup/Dockerfile\n"\
 "      context: .\n"\
 "%s"\
-"%s%s%s"\
+"    volumes:\n"\
+"      - ${DATABASE_BIND_PATH}:/tmp/lancedb\n"\
+"%s%s"\
 "    expose:\n"\
 "      - ${APP_EXPOSE_PORT}\n"\
 "    ports:\n"\
@@ -553,7 +570,6 @@
 "      - llamacpp\n"\
 "      - embedding_eng\n"\
 
-#define COMPOSE_FILE_VOLUME_SECTION "    volumes:\n"
 #define COMPOSE_FILE_DEV_MODE "      - .:/app\n"
 #define COMPOSE_FILE_STATIC_API_KEY \
 "    environment:\n"\
@@ -569,6 +585,7 @@
 "APP_EXPOSE_PORT=%s\n"\
 "ENG_ACCESS_PORT=8080\n"\
 "MODEL_SAVE_PATH=volumes/models\n"\
+"DATABASE_BIND_PATH=%s\n"\
 "INFERENCE_ENG=llamacpp\n"\
 "INFERENCE_ENG_PORT=8080\n"\
 "INFERENCE_ENG_VERSION=server--b1-27d4b7c\n"\

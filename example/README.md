@@ -46,3 +46,6 @@ example/test_apis.py::TestAllAPIs::test_inference_by_request_stream PASSED      
 
 ================================================================================== 5 passed in 7.30s ==================================================================================
 ```
+
+## Api Test
+![Successful Running example](img/api_test.png)

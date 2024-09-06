@@ -9,7 +9,7 @@ RMIT="RMIT"
 
 encoding = tiktoken.get_encoding("r50k_base") 
 
-client = OpenAI(base_url="http://localhost:8000/v1", api_key="not-needed", organization='SelectedModel')
+client = OpenAI(base_url="http://localhost:8080/v1", api_key="not-needed", organization='SelectedModel')
 
 def writehistory(filename,text):
     with open(filename, 'a', encoding='utf-8') as f:

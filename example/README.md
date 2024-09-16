@@ -1,3 +1,26 @@
+# How to run UI locally
+
+Please use VSCode `Run and Debug` to run the app. 
+
+* `Python Streamlit` for local inference and testing
+* `Python Debugger` for launching the backend server in the production environment
+![](./img/Screenshot%202024-08-18%20at%205.04.57 PM.png)
+
+
+# For developer 
+
+After running the app, check address below
+
+```bash
+
+# Root router of the server
+http://127.0.0.1:8000
+
+# Swagger UI
+http://127.0.0.1:8000/docs
+```
+
+![](./img/Screenshot%202024-08-07%20at%2010.28.05 AM.png)
 
 # Demo for how to use openai API client to invoke voyager API
 
@@ -23,14 +46,8 @@ pip3 install -r example/requirements.txt
 Before running the test, you need to start all the services by running the following command:
 
 ```bash
-make download
 make up
 ```
-Please use VSCode `Run and Debug` to run the app. 
-
-* `Python Streamlit` for local inference and testing
-* `Python Debugger` for launching the backend server in the production environment
-![](./img/Screenshot%202024-08-18%20at%205.04.57 PM.png)
 
 Run the command below and check the results
 

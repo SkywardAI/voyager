@@ -12,7 +12,6 @@ https://github.com/user-attachments/assets/75d5d380-20df-4d88-b94a-19bc4fabc224
 
 ## Installation
 
-
 Make sure you execute the following command at the root of the project
 
 ```bash
@@ -24,8 +23,14 @@ pip3 install -r example/requirements.txt
 Before running the test, you need to start all the services by running the following command:
 
 ```bash
+make download
 make up
 ```
+Please use VSCode `Run and Debug` to run the app. 
+
+* `Python Streamlit` for local inference and testing
+* `Python Debugger` for launching the backend server in the production environment
+![](./img/Screenshot%202024-08-18%20at%205.04.57 PM.png)
 
 Run the command below and check the results
 

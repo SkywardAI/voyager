@@ -1,0 +1,10 @@
+{
+    "name": "Python Sreamlit",
+    "type": "debugpy",
+    "request": "launch",
+    "module": "streamlit.web.cli",
+    "args": [
+        "run",
+        "${workspaceFolder}/demo_ui.py"
+    ],
+}

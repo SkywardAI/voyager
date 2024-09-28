@@ -11,7 +11,7 @@ The project is OpenAI-like API service of SkywardAI ecosystem.
 
 https://github.com/user-attachments/assets/fa7059c2-309e-486a-a28a-45867613c84b
 
-### CLI 💥
+# How to use the CLI tool to configure the project 💥
 Introducing our new CLI tool!  
 > Make sure you can normally run `make`, `docker compose`, `gcc`, `sh` in your host machine.  
 

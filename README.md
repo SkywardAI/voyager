@@ -5,11 +5,12 @@ The project is OpenAI-like API service of SkywardAI ecosystem.
 [![Release Drafter 🚀](https://github.com/SkywardAI/voyager/actions/workflows/release-drafter.yml/badge.svg)](https://github.com/SkywardAI/voyager/actions/workflows/release-drafter.yml) 
 [![Release Image 🚀](https://github.com/SkywardAI/voyager/actions/workflows/release-image.yml/badge.svg)](https://github.com/SkywardAI/voyager/actions/workflows/release-image.yml)
 
-## BUILD & RUN
-
-### Setup and API usage demo video
+# Demo video
 
 https://github.com/user-attachments/assets/fa7059c2-309e-486a-a28a-45867613c84b
+
+## BUILD & RUN
+
 
 # How to use the CLI tool to configure the project 💥
 Introducing our new CLI tool!  

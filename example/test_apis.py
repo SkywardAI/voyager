@@ -127,4 +127,10 @@ class TestAllAPIs(unittest.TestCase):
         res = requests.get(url=self.base_url+"/v1/version")
         self.assertEqual(res.status_code, 200)
         data = res.json().get("inference_engine_version")
-        self.assertEqual('server--b1-27d4b7c', data)
+        self.assertEqual('server--b1-2321a5e', data)
+    def test_invalid_api_key(self):
+        res = requests.get(url=self.base_url+"/v1/token/api-key", headers={"Authorization": "Bearer invalid-key"})
+        self.assertEqual(res.status_code, 401)
+    def test_invalid_endpoint(self):
+        res=requests.get(url=self.base_url+"/v1/invalid-endpoint")
+        self.assertEqual(res.status_code, 404)    

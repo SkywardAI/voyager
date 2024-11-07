@@ -1,3 +1,4 @@
+#!/bin/bash
 yum install git docker -y
 
 export DOCKER_CONFIG="$HOME/.docker"

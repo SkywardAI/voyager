@@ -1,5 +1,6 @@
 #!/bin/bash
 yum install git docker -y
+yum groupinstall "Development Tools" -y
 
 export DOCKER_CONFIG="$HOME/.docker"
 mkdir -p $DOCKER_CONFIG/cli-plugins
@@ -13,6 +14,4 @@ git clone https://github.com/RenuzitV/voyager.git
 
 cd voyager
 
-chmod 777 ./setup/setup.sh
-
-./setup/setup.sh
+make up

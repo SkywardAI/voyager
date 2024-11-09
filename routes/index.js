@@ -19,6 +19,7 @@ import inferenceRoute from "./inference.js";
 import tokenRoute from "./token.js";
 // import tracingRoute from "./tracing.js";
 import embeddingRoute from "./embedding.js";
+import encryptionRoute from "./encryption.js";
 // import encoderRoute from "./encoder.js";
 // import decoderRoute from "./decoder.js";
 import versionRoute from "./version.js";
@@ -52,6 +53,7 @@ function generateAPIRouters() {
     isRouteEnabled("token") && api_router.use('/token', tokenRoute());
     // api_router.use('/tracing', tracingRoute());
     isRouteEnabled("embedding") && api_router.use('/embeddings', embeddingRoute());
+    isRouteEnabled("encryption") && api_router.use('/encryption', encryptionRoute());
     // api_router.use('/encoder', encoderRoute());
     // api_router.use('/decoder', decoderRoute());
     isRouteEnabled("version") && api_router.use('/version', versionRoute());

@@ -110,6 +110,274 @@
         }
       }
     },
+    "/v1/encryption/encrypt-aes": {
+      "post": {
+        "summary": "Encrypt a message using AES encryption with password-based key derivation.",
+        "description": "This endpoint encrypts a message using AES-256 CBC mode. It uses a password and a randomly generated salt to derive the encryption key, and returns the encrypted message, IV, and salt.",
+        "operationId": "encryptAesMessage",
+        "tags": ["Encryption"],
+        "requestBody": {
+          "description": "The message and password to be encrypted.",
+          "content": {
+            "application/json": {
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "The plaintext message to be encrypted."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password used to derive the AES key."
+                  }
+                },
+                "required": ["message", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Encryption successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "encryptedMessage": {
+                      "type": "string",
+                      "description": "The encrypted message (ciphertext)."
+                    },
+                    "iv": {
+                      "type": "string",
+                      "description": "The initialization vector used for encryption (hex format)."
+                    },
+                    "salt": {
+                      "type": "string",
+                      "description": "The salt used for key derivation (hex format)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameters (message or password)."
+          },
+          "500": {
+            "description": "Encryption failed due to an internal server error."
+          }
+        }
+      }
+    },
+    "/v1/encryption/decrypt-aes": {
+      "post": {
+        "summary": "Decrypt an encrypted message using AES with the provided password, IV, and salt.",
+        "description": "This endpoint decrypts an encrypted message using AES-256 CBC mode. It requires the encrypted message, password, IV, and salt, and returns the decrypted message.",
+        "operationId": "decryptAesMessage",
+        "tags": ["Encryption"],
+        "requestBody": {
+          "description": "The encrypted message, password, IV, and salt to decrypt.",
+          "content": {
+            "application/json": {
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "encryptedMessage": {
+                    "type": "string",
+                    "description": "The encrypted message (ciphertext) to be decrypted."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password used to derive the AES key."
+                  },
+                  "iv": {
+                    "type": "string",
+                    "description": "The initialization vector used for encryption (hex format)."
+                  },
+                  "salt": {
+                    "type": "string",
+                    "description": "The salt used for key derivation (hex format)."
+                  }
+                },
+                "required": ["encryptedMessage", "password", "iv", "salt"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Decryption successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "decryptedMessage": {
+                      "type": "string",
+                      "description": "The decrypted plaintext message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required parameters (encryptedMessage, password, iv, or salt)."
+          },
+          "500": {
+            "description": "Decryption failed due to an internal server error."
+          }
+        }
+      }
+    },
+    "/v1/encryption/encrypt-rsa": {
+      "post": {
+        "summary": "Encrypt a message using the provided public RSA key",
+        "operationId": "encryptRsaMessage",
+        "tags": ["Encryption"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "The plaintext message to be encrypted"
+                  }
+                },
+                "required": ["message"]
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The RSA public key used for encryption"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Encryption successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "encryptedMessage": {
+                      "type": "string",
+                      "description": "The base64 encoded encrypted message"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing message or public key"
+          },
+          "500": {
+            "description": "Encryption failed"
+          }
+        }
+      }
+    },
+    "/v1/encryption/decrypt-rsa": {
+      "post": {
+        "summary": "Decrypt a message using the private RSA key",
+        "operationId": "decryptRsaMessage",
+        "tags": ["Encryption"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "encryptedMessage": {
+                    "type": "string",
+                    "description": "The base64 encoded encrypted message to be decrypted"
+                  }
+                },
+                "required": ["encryptedMessage"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Decryption successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "decryptedMessage": {
+                      "type": "string",
+                      "description": "The decrypted plaintext message"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing encryptedMessage"
+          },
+          "500": {
+            "description": "Decryption failed"
+          }
+        }
+      }
+    },
+    "/v1/encryption/get-rsa-key": {
+      "get": {
+        "summary": "Get the Public Key",
+        "description": "Fetches the public key used for encrypting messages.",
+        "operationId": "getPublicKey",
+        "produces": [
+          "application/json"
+        ],
+        "tags": ["Encryption"],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the public key.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "publicKey": {
+                  "type": "string",
+                  "description": "The public key used for encrypting messages."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "example": "Failed to retrieve public key."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/chat/completions": {
       "post": {
         "tags": [

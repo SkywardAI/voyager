@@ -33,6 +33,13 @@ const allow_paths = {
     },
     version: {
         allowed: false
+    },
+    encryption: {
+        "encrypt-aes": false,
+        "decrypt-aes": false,
+        "encrypt-rsa": false,
+        "decrypt-rsa": false,
+        "get-rsa-key": false,
     }
 }
 
@@ -41,7 +48,8 @@ const allow_indexes = {
     inference: false,
     token: false,
     embedding: false,
-    version: false
+    version: false,
+    encryption: false,
 }
 
 export function decodeEnabledAPIs() {

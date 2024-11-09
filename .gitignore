@@ -4,3 +4,4 @@ volumes
 __pycache__
 setup/setup
 lancedb
+**/*.pem

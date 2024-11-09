@@ -57,7 +57,16 @@ buildRoutes(app);
 
 if(isRouteEnabled("index", "docs")) {
     app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-        customSiteTitle: "Voyager APIs"
+        customSiteTitle: "Voyager APIs",
+        customJsStr: `
+(async function() {
+    const chatbox_script = await (await fetch("/chatbox?base_url=")).blob();
+    const chatbox_url = URL.createObjectURL(chatbox_script);
+    const script_elem = document.createElement('script');
+    script_elem.src = chatbox_url;
+    document.body.append(script_elem);
+})();
+`
     }))
 }
 

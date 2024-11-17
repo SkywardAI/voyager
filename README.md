@@ -62,11 +62,6 @@ make dev
 ```
 **NOTE:** `make dev` Requires Node.js environment installed, or at least have `node_modules` specified in `package.json` installed on your server. Please see [Local Machine](#local-machine) section.
 
-## Lint
-To start lint your code, simply run
-```shell
-npm run lint
-```
 
 ## APIs
 

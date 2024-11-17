@@ -24,6 +24,7 @@ No gcc compiler? You can choose to compile the file `/setup/setup.c` yourself.
   
 Explore it yourself to find more settings!
 
+# Build & Setup
 
 ### Local Machine
 * Please make sure you installed `Node.js` on your local machine.  

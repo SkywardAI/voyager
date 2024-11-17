@@ -39,7 +39,9 @@ function generateResponseContent(
   system_fingerprint,
   stream,
   content,
-  stopped
+  stopped,
+  tokens_predicted,
+  tokens_evaluated
 ) {
   const resp = {
     id,
@@ -61,9 +63,9 @@ function generateResponseContent(
   };
   if (!stream) {
     resp.usage = {
-      prompt_tokens: 0,
-      completion_tokens: 0,
-      total_tokens: 0,
+      prompt_tokens: tokens_evaluated,
+      completion_tokens: tokens_predicted,
+      total_tokens: tokens_evaluated + tokens_predicted,
     };
   }
   return resp;
@@ -187,18 +189,18 @@ export async function chatCompletion(req, res) {
         res.setHeader("Connection", "Keep-Alive");
     }
     doInference(request_body, (data) => {
-        const { content, stop } = data;
+        const { content, stop, tokens_predicted, tokens_evaluated } = data;
         if(isStream) {
             res.write(JSON.stringify(
                 generateResponseContent(
-                    api_key, 'chat.completion.chunk', model, system_fingerprint, isStream, content, stop
+                    api_key, 'chat.completion.chunk', model, system_fingerprint, isStream, content, stop, tokens_predicted, tokens_evaluated
                 )
             )+'\n\n');
             if(stop) res.end();
         } else {
             res.send(generateResponseContent(
                 api_key, 'chat.completion', model, system_fingerprint,
-                isStream, content, true
+                isStream, content, true, tokens_predicted, tokens_evaluated
             ))
         }
     }, isStream)

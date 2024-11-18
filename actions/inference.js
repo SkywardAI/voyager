@@ -193,7 +193,8 @@ export async function chatCompletion(req, res) {
         if(isStream) {
             res.write(JSON.stringify(
                 generateResponseContent(
-                    api_key, 'chat.completion.chunk', model, system_fingerprint, isStream, content, stop, tokens_predicted, tokens_evaluated
+                    api_key, 'chat.completion.chunk', model, system_fingerprint, isStream, content, stop,
+                    tokens_predicted, tokens_evaluated
                 )
             )+'\n\n');
             if(stop) res.end();

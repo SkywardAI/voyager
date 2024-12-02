@@ -33,6 +33,9 @@ const allow_paths = {
     },
     version: {
         allowed: false
+    },
+    file: {
+        allowed: false
     }
 }
 
@@ -41,7 +44,8 @@ const allow_indexes = {
     inference: false,
     token: false,
     embedding: false,
-    version: false
+    version: false,
+    file: false
 }
 
 export function decodeEnabledAPIs() {
@@ -71,7 +75,7 @@ export function decodeEnabledAPIs() {
 
 /**
  * check if provided route enabled
- * @param {"index"|"inference"|"embedding"|"version"|"token"} index_path_name name of route index
+ * @param {"index"|"inference"|"embedding"|"version"|"token"|"file"} index_path_name name of route index
  * @param {"docs"|"stats"|"healthy"|"chatbox"|"completions"|"rag"|"calculate"|"dataset"} api_name name of specific api
  * @returns {Boolean}
  */

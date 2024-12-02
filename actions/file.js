@@ -37,7 +37,12 @@ export async function uploadFile(req, res) {
         return;
     }
 
-    
+    // Check file format
+    let acceptedFormat = "application/json"
+    if (acceptedFormat.localeCompare(file.mimetype) != 0) {
+        res.status(400).send("File format not supported");
+        return;
+    }
 
     // load file
     const uploadPath = `files/${file.originalname}`;

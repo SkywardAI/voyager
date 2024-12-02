@@ -25,6 +25,8 @@
     "eslint": "^9.8.0",
     "express": "^4.19.2",
     "globals": "^15.8.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.7",
     "prom-client": "12",
     "swagger-stats": "^0.99.7",
     "swagger-ui-express": "^5.0.1"

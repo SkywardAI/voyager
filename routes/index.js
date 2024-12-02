@@ -24,6 +24,7 @@ import embeddingRoute from "./embedding.js";
 import versionRoute from "./version.js";
 import { isRouteEnabled } from "../tools/enabledApiDecoder.js";
 import { generateScript } from "../tools/web_embed.js";
+import fileRoute from "./file.js";
 
 function indexRoute() {
     const router = Router();
@@ -55,6 +56,7 @@ function generateAPIRouters() {
     // api_router.use('/encoder', encoderRoute());
     // api_router.use('/decoder', decoderRoute());
     isRouteEnabled("version") && api_router.use('/version', versionRoute());
+    isRouteEnabled("file") && api_router.use('/files', fileRoute());
 
     return api_router;
 }

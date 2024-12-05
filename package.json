@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning index.js",
-    "dev": "nodemon --disable-warning=ExperimentalWarning index.js",
+    "dev": "nodemon --disable-warning=ExperimentalWarning index.js --ignore files",
     "lint": "npx eslint .",
     "build": "npm install && node index.js"
   },

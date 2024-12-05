@@ -536,10 +536,65 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "status": {
+                    "id": {
                       "type": "string",
                       "examples": [
-                        "Hello world"
+                        "file_abc123"
+                      ]
+                    },
+                    "object": {
+                      "type": "string",
+                      "examples": [
+                        "file"
+                      ]
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "examples": [
+                        120001
+                      ]
+                    },
+                    "created_at": {
+                      "type": "integer",
+                      "examples": [
+                        1677610603
+                      ]
+                    },
+                    "filename": {
+                      "type": "string",
+                      "examples": [
+                        "test.json"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "Get all files",
+        "description": "Get all files metadata available in the table",
+        "tags": [
+          "File"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all files metadata successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "examples": [
+                        "Hello, world!"
                       ]
                     }
                   }

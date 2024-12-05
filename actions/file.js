@@ -1,7 +1,9 @@
 // coding=utf-8
 
+import { randomUUID } from "crypto";
 import { extractAPIKeyFromRequest, validateAPIKey } from "../tools/apiKey.js";
 import * as fs from 'fs';
+import { getAllFilesData, loadFileToDatabase } from "../database/file-handling.js";
 
 // Copyright [2024] [SkywardAI]
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,14 +24,10 @@ export async function uploadFile(req, res) {
         return;
     }
     const { file } = req;
-    console.log(file);
     if (!file) {
         res.status(400).send("Input file not specified");
         return;
     }
-
-    // Check file type (currently only accept json)
-
 
     // Check file size limit (10MB)
     if (file.size / 1000000 > 10) {
@@ -44,24 +42,39 @@ export async function uploadFile(req, res) {
         return;
     }
 
+    // Load in database
+    let resBody = {
+        "id": randomUUID(),
+        "bytes": file.size,
+        "created_at": Date.now(),
+        "filename": file.originalname,
+    }
+
+    const result = await loadFileToDatabase(resBody);
+    if (!result) {
+        res.status(500).send("Can't save to database");
+        return;
+    }
+
     // load file
     const uploadPath = `files/${file.originalname}`;
-    // let buffer = Buffer.from(file.buffer);
     fs.writeFileSync(uploadPath, file.buffer, (err) => {
         if (err) throw err;
         console.log("File has been saved");
     })
 
-    res.status(200).send({
-        "id": "file id",
-        "object": "file",
-        "bytes": file.size,
-        "created_at": Date.now(),
-        "filename": file.originalname,
-    });
+    res.status(200).send(resBody);
     return;
 }
 
 export async function getAllFiles(req, res) {
+    if (!validateAPIKey(extractAPIKeyFromRequest(req))) {
+        res.status(401).send("Not Authorized!");
+        return;
+    }
 
+    let resBody = await getAllFilesData();
+    console.log(resBody);
+    res.status(200).send(resBody);
+    return;
 }

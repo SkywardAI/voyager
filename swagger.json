@@ -542,12 +542,6 @@
                         "file_abc123"
                       ]
                     },
-                    "object": {
-                      "type": "string",
-                      "examples": [
-                        "file"
-                      ]
-                    },
                     "bytes": {
                       "type": "integer",
                       "examples": [
@@ -570,6 +564,15 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Incorrect or missing file"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "500": {
+            "description": "Server error"
           }
         },
         "security": [
@@ -591,16 +594,44 @@
               "application/json": {
                 "schema": {
                   "properties": {
-                    "id": {
-                      "type": "string",
-                      "examples": [
-                        "Hello, world!"
-                      ]
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "examples": [
+                              "file_abc123"
+                            ]
+                          },
+                          "bytes": {
+                            "type": "number",
+                            "examples": [
+                              "120001"
+                            ]
+                          },
+                          "created_at": {
+                            "type": "number",
+                            "examples": [
+                              "1677610603"
+                            ]
+                          },
+                          "filename": {
+                            "type": "string",
+                            "examples": [
+                              "test.json"
+                            ]
+                          }
+                        }
+                      }
                     }
                   }
                 }
               }
             }
+          },
+          "401": {
+            "description": "Not authorized"
           }
         },
         "security": [

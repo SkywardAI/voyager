@@ -74,7 +74,10 @@ export async function getAllFiles(req, res) {
     }
 
     let resBody = await getAllFilesData();
-    console.log(resBody);
-    res.status(200).send(resBody);
+
+    const completeRes = {};
+    completeRes['data'] = resBody;
+
+    res.status(200).send(completeRes);
     return;
 }

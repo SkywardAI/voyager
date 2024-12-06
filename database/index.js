@@ -16,11 +16,11 @@
 import { connect } from "@lancedb/lancedb";
 import { 
     Schema, Field, FixedSizeList, 
-    Float32, Utf8, Int32,
+    Float32, Utf8, Int32, Int64,
     // eslint-disable-next-line
     Table 
 } from "apache-arrow";
-import { API_KEY_TABLE, DATASET_TABLE, SYSTEM_TABLE } from "./types.js";
+import { API_KEY_TABLE, DATASET_TABLE, FILE_TABLE, SYSTEM_TABLE } from "./types.js";
 
 const uri = "/tmp/lancedb/";
 const db = await connect(uri);
@@ -43,6 +43,13 @@ export async function initDB(force = false) {
     await db.createEmptyTable(API_KEY_TABLE, new Schema([
         new Field("api_key", new Utf8()),
         new Field("usage", new Int32())
+    ]), open_options);
+    // create or re-open file table
+    await db.createEmptyTable(FILE_TABLE, new Schema([
+        new Field("id", new Utf8()),
+        new Field("bytes", new Int32()),
+        new Field("created_at", new Int64()),
+        new Field("filename", new Utf8())
     ]), open_options);
 }
 

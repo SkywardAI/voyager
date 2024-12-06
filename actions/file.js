@@ -18,6 +18,12 @@ import { getAllFilesData, loadFileToDatabase } from "../database/file-handling.j
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * function for upload a file
+ * @param {Request} req 
+ * @param {Response} res 
+ */
+
 export async function uploadFile(req, res) {
     if (!validateAPIKey(extractAPIKeyFromRequest(req))) {
         res.status(401).send("Not Authorized!");
@@ -66,6 +72,12 @@ export async function uploadFile(req, res) {
     res.status(200).send(resBody);
     return;
 }
+
+/**
+ * function for get all files metadata
+ * @param {Request} req 
+ * @param {Response} res 
+ */
 
 export async function getAllFiles(req, res) {
     if (!validateAPIKey(extractAPIKeyFromRequest(req))) {

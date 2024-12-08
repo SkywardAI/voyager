@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node --disable-warning=ExperimentalWarning index.js",
-    "dev": "nodemon --disable-warning=ExperimentalWarning index.js",
+    "dev": "nodemon --disable-warning=ExperimentalWarning index.js --ignore files",
     "lint": "npx eslint .",
     "build": "npm install && node index.js"
   },
@@ -25,6 +25,8 @@
     "eslint": "^9.8.0",
     "express": "^4.19.2",
     "globals": "^15.8.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.7",
     "prom-client": "12",
     "swagger-stats": "^0.99.7",
     "swagger-ui-express": "^5.0.1"

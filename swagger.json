@@ -36,6 +36,10 @@
     {
       "name": "Version",
       "description": "v1 Version APIs"
+    },
+    {
+      "name": "File",
+      "description": "v1 File APIs"
     }
   ],
   "paths": {
@@ -44,7 +48,7 @@
         "tags": [
           "Index"
         ],
-        "summary" : "Route of this page",
+        "summary": "Route of this page",
         "description": "Route to get this page"
       }
     },
@@ -61,7 +65,9 @@
             "content": {
               "text/plain; charset=utf-8": {
                 "examples": {
-                  "ok": {"value": "ok"}
+                  "ok": {
+                    "value": "ok"
+                  }
                 }
               }
             }
@@ -74,13 +80,15 @@
     },
     "/stats": {
       "get": {
-        "tags": ["Index"],
-        "summary" : "Route to check stats",
+        "tags": [
+          "Index"
+        ],
+        "summary": "Route to check stats",
         "description": "Graphical server stats, Click [here](/stats) to get the page.",
         "responses": {
           "200": {
             "description": "Returns The page of checking stats",
-            "content":{
+            "content": {
               "text/html": {}
             }
           }
@@ -89,8 +97,10 @@
     },
     "/chatbox": {
       "get": {
-        "tags": ["Index"],
-        "summary" : "Route to embed chatbot",
+        "tags": [
+          "Index"
+        ],
+        "summary": "Route to embed chatbot",
         "description": "Please see this [README](https://github.com/SkywardAI/voyager?tab=readme-ov-file#embed-your-chatbot-into-website).",
         "parameters": [
           {
@@ -103,7 +113,7 @@
         "responses": {
           "200": {
             "description": "Returns the load script, usually load with script tag in HTML",
-            "content":{
+            "content": {
               "application/json; charset=utf-8": {}
             }
           }
@@ -127,8 +137,14 @@
               },
               "example": {
                 "messages": [
-                  { "role": "system", "content": "You are a helpful assistant who helps users solve their questions." },
-                  { "role": "user", "content": "Hello, tell me more about you!" }
+                  {
+                    "role": "system",
+                    "content": "You are a helpful assistant who helps users solve their questions."
+                  },
+                  {
+                    "role": "user",
+                    "content": "Hello, tell me more about you!"
+                  }
                 ]
               }
             }
@@ -141,8 +157,12 @@
               "application/json": {
                 "schema": {
                   "oneOf": [
-                    {"$ref": "#/components/schemas/CompletionResponseStream"},
-                    {"$ref": "#/components/schemas/CompletionResponseEntire"}
+                    {
+                      "$ref": "#/components/schemas/CompletionResponseStream"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CompletionResponseEntire"
+                    }
                   ]
                 }
               }
@@ -156,13 +176,17 @@
           }
         },
         "security": [
-          {"api_key": []}
+          {
+            "api_key": []
+          }
         ]
       }
     },
     "/v1/chat/rag-completions": {
       "post": {
-        "tags": ["Chat"],
+        "tags": [
+          "Chat"
+        ],
         "summary": "AI chat completion with RAG dataset.",
         "description": "Start a conversation with given messages and QAs from dataset as context. Please load dataset and pass the correct dataset name to make it work.",
         "requestBody": {
@@ -174,8 +198,14 @@
               },
               "example": {
                 "messages": [
-                  { "role": "system", "content": "You are a helpful assistant who helps users solve their questions." },
-                  { "role": "user", "content": "tell me something interest about massachusetts" }
+                  {
+                    "role": "system",
+                    "content": "You are a helpful assistant who helps users solve their questions."
+                  },
+                  {
+                    "role": "user",
+                    "content": "tell me something interest about massachusetts"
+                  }
                 ],
                 "dataset_name": "aisuko/squad01-v2"
               }
@@ -196,15 +226,21 @@
                       "properties": {
                         "context": {
                           "type": "string",
-                          "examples": ["Questioin:In what year did Massachusetts first require children to be educated in schools? Answer:1852"]
+                          "examples": [
+                            "Questioin:In what year did Massachusetts first require children to be educated in schools? Answer:1852"
+                          ]
                         },
                         "identifier": {
                           "type": "string",
-                          "examples": ["Private_school"]
+                          "examples": [
+                            "Private_school"
+                          ]
                         },
                         "_distance": {
                           "type": "number",
-                          "examples": [0.4810483455657959]
+                          "examples": [
+                            0.4810483455657959
+                          ]
                         }
                       }
                     }
@@ -221,13 +257,17 @@
           }
         },
         "security": [
-          {"api_key": []}
+          {
+            "api_key": []
+          }
         ]
       }
     },
     "/v1/embeddings": {
       "post": {
-        "tags": ["Embedding"],
+        "tags": [
+          "Embedding"
+        ],
         "summary": "Get embedding of input",
         "description": "Get the embedding value of given input, in OpenAI format",
         "requestBody": {
@@ -237,17 +277,23 @@
                 "properties": {
                   "input": {
                     "type": "string",
-                    "examples": ["Hello, world!"]
+                    "examples": [
+                      "Hello, world!"
+                    ]
                   },
                   "model": {
                     "type": "string",
                     "description": "You can pass model, but this won't work at current stage",
-                    "examples": ["all-MiniLM-L6-v2"]
+                    "examples": [
+                      "all-MiniLM-L6-v2"
+                    ]
                   },
                   "encoding_format": {
                     "type": "string",
                     "description": "You can pass encoding_format, but this won't work as we currently only support float.",
-                    "examples": ["float"]
+                    "examples": [
+                      "float"
+                    ]
                   }
                 },
                 "required": [
@@ -270,7 +316,9 @@
                   "properties": {
                     "object": {
                       "type": "string",
-                      "examples": ["list"]
+                      "examples": [
+                        "list"
+                      ]
                     },
                     "data": {
                       "type": "array",
@@ -279,13 +327,19 @@
                         "properties": {
                           "object": {
                             "type": "string",
-                            "examples": ["embedding"]
+                            "examples": [
+                              "embedding"
+                            ]
                           },
                           "embedding": {
                             "type": "array",
                             "items": {
                               "type": "number",
-                              "examples": [-0.02184351161122322, 0.049017686396837234, 0.06728602200746536]
+                              "examples": [
+                                -0.02184351161122322,
+                                0.049017686396837234,
+                                0.06728602200746536
+                              ]
                             },
                             "description": "The length should be exactly 384 items",
                             "example": [
@@ -300,14 +354,18 @@
                           },
                           "index": {
                             "type": "integer",
-                            "examples": [0]
+                            "examples": [
+                              0
+                            ]
                           }
                         }
                       }
                     },
                     "model": {
                       "type": "string",
-                      "examples": ["all-MiniLM-L6-v2"]
+                      "examples": [
+                        "all-MiniLM-L6-v2"
+                      ]
                     },
                     "usage": {
                       "type": "array",
@@ -316,11 +374,15 @@
                         "properties": {
                           "prompt_tokens": {
                             "type": "integer",
-                            "examples": [0]
+                            "examples": [
+                              0
+                            ]
                           },
                           "total_tokens": {
                             "type": "integer",
-                            "examples": [0]
+                            "examples": [
+                              0
+                            ]
                           }
                         }
                       }
@@ -341,13 +403,17 @@
           }
         },
         "security": [
-          {"api_key": []}
+          {
+            "api_key": []
+          }
         ]
       }
     },
     "/v1/embeddings/dataset": {
       "post": {
-        "tags": ["Embedding"],
+        "tags": [
+          "Embedding"
+        ],
         "summary": "Loads dataset into database",
         "description": "Load a dataset from url or directly pass a dataset array. Requires either url or json specified.",
         "requestBody": {
@@ -358,7 +424,7 @@
                 "required": [
                   "name"
                 ],
-                "example":{
+                "example": {
                   "name": "aisuko/squad01-v2",
                   "url": "https://datasets-server.huggingface.co/rows?dataset=aisuko%2Fsquad01-v2&config=default&split=validation&offset=0&length=100"
                 }
@@ -378,13 +444,17 @@
           }
         },
         "security": [
-          {"api_key": []}
+          {
+            "api_key": []
+          }
         ]
       }
     },
     "/v1/token/api-key": {
       "get": {
-        "tags": [ "Token" ],
+        "tags": [
+          "Token"
+        ],
         "summary": "Get api key",
         "description": "The route to get api key, please keep it yourself.",
         "responses": {
@@ -411,7 +481,9 @@
       "get": {
         "summary": "Get engine versions",
         "description": "Get version of various engines used by this project",
-        "tags": ["Version"],
+        "tags": [
+          "Version"
+        ],
         "responses": {
           "200": {
             "description": "Get a json of versions",
@@ -421,7 +493,9 @@
                   "properties": {
                     "inference_engine_version": {
                       "type": "string",
-                      "examples": ["server--b1-2321a5e"]
+                      "examples": [
+                        "server--b1-2321a5e"
+                      ]
                     }
                   }
                 }
@@ -429,6 +503,142 @@
             }
           }
         }
+      }
+    },
+    "/v1/files": {
+      "post": {
+        "summary": "Upload a file",
+        "description": "Upload a file to the voyager endpoint",
+        "tags": [
+          "File"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "description": "Request body for file upload",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "input": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload a file successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "examples": [
+                        "file_abc123"
+                      ]
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "examples": [
+                        120001
+                      ]
+                    },
+                    "created_at": {
+                      "type": "integer",
+                      "examples": [
+                        1677610603
+                      ]
+                    },
+                    "filename": {
+                      "type": "string",
+                      "examples": [
+                        "test.json"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Incorrect or missing file"
+          },
+          "401": {
+            "description": "Not authorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "Get all files",
+        "description": "Get all files metadata available in the table",
+        "tags": [
+          "File"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all files metadata successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "examples": [
+                              "file_abc123"
+                            ]
+                          },
+                          "bytes": {
+                            "type": "number",
+                            "examples": [
+                              "120001"
+                            ]
+                          },
+                          "created_at": {
+                            "type": "number",
+                            "examples": [
+                              "1677610603"
+                            ]
+                          },
+                          "filename": {
+                            "type": "string",
+                            "examples": [
+                              "test.json"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authorized"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     }
   },
@@ -440,11 +650,13 @@
             "type": "array",
             "items": {
               "type": "object",
-              "properties":{
+              "properties": {
                 "role": {
                   "type": "string",
                   "examples": [
-                    "system", "user", "assistant"
+                    "system",
+                    "user",
+                    "assistant"
                   ]
                 },
                 "content": {
@@ -459,14 +671,20 @@
           },
           "max_tokens": {
             "type": "integer",
-            "examples": [ 32, 128, 512 ]
+            "examples": [
+              32,
+              128,
+              512
+            ]
           },
           "end": {
             "type": "array",
             "description": "When AI outputs the end pattern, end response.",
             "items": {
               "type": "string",
-              "examples": ["<|user|>"]
+              "examples": [
+                "<|user|>"
+              ]
             }
           },
           "stream": {
@@ -484,11 +702,13 @@
             "type": "array",
             "items": {
               "type": "object",
-              "properties":{
+              "properties": {
                 "role": {
                   "type": "string",
                   "examples": [
-                    "system", "user", "assistant"
+                    "system",
+                    "user",
+                    "assistant"
                   ]
                 },
                 "content": {
@@ -503,14 +723,20 @@
           },
           "max_tokens": {
             "type": "integer",
-            "examples": [ 32, 128, 512 ]
+            "examples": [
+              32,
+              128,
+              512
+            ]
           },
           "end": {
             "type": "array",
             "description": "When AI outputs the end pattern, end response.",
             "items": {
               "type": "string",
-              "examples": ["<|user|>"]
+              "examples": [
+                "<|user|>"
+              ]
             }
           },
           "stream": {
@@ -534,7 +760,9 @@
           "name": {
             "type": "string",
             "description": "Dataset name",
-            "examples": ["aisuko/squad01-v2"]
+            "examples": [
+              "aisuko/squad01-v2"
+            ]
           },
           "url": {
             "type": "string",
@@ -551,7 +779,7 @@
                 "identifier": {
                   "type": "string",
                   "description": "Identifier of the row, not necessarily unique",
-                  "examples":[
+                  "examples": [
                     "Chloroplast"
                   ]
                 },
@@ -643,7 +871,9 @@
                 "logprobs": {
                   "type": "number",
                   "nullable": true,
-                  "examples": [null]
+                  "examples": [
+                    null
+                  ]
                 },
                 "finish_reason": {
                   "type": "string",
@@ -661,15 +891,21 @@
               "properties": {
                 "prompt_tokens": {
                   "type": "integer",
-                  "examples":[0]
+                  "examples": [
+                    0
+                  ]
                 },
                 "completion_tokens": {
                   "type": "integer",
-                  "examples":[0]
+                  "examples": [
+                    0
+                  ]
                 },
                 "total_tokens": {
                   "type": "integer",
-                  "examples":[0]
+                  "examples": [
+                    0
+                  ]
                 }
               }
             }
@@ -738,12 +974,15 @@
                 "logprobs": {
                   "type": "number",
                   "nullable": true,
-                  "examples": [null]
+                  "examples": [
+                    null
+                  ]
                 },
                 "finish_reason": {
                   "type": "string",
                   "examples": [
-                    null, "stop"
+                    null,
+                    "stop"
                   ]
                 }
               }
